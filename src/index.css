@@ -1,9 +1,29 @@
 @import "tailwindcss";
 
+:root {
+  --surface: #f9faf8;
+  --surface-container: #ffffff;
+  --surface-sidebar: #f3f4f2;
+  --surface-soft: #eef2ee;
+  --primary: #43664d;
+  --primary-soft: #84a98c;
+  --secondary: #655b6b;
+  --secondary-soft: #e9e3ec;
+  --text-main: #191c1b;
+  --text-muted: #655b6b;
+  --border-soft: #e7ebe6;
+  --log-bg: #eef2ee;        /* açık sage gri */
+--log-text: #3f5f4a;
+}
+
 html, body, #root {
   min-height: 100%;
+  margin: 0;
+  background: var(--surface);
 }
 
 body {
-  margin: 0;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-main);
+  background: var(--surface);
 }

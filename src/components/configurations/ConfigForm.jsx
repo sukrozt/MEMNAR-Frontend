@@ -49,13 +49,20 @@ function ConfigForm({ onRun, isConnected}) {
    return (
   <div>
     <div className="flex items-center gap-3 mb-5">
-      <div className="w-10 h-10 rounded-full bg-slate-800 text-cyan-400 flex items-center justify-center font-bold">02</div>
-      <h3 className="text-2xl font-semibold">Configure & Run</h3>
+      <div className="w-10 h-10 rounded-full bg-[var(--secondary-soft)] text-[var(--secondary)] flex items-center justify-center font-bold">
+        02
+      </div>
+      <h3
+        className="text-2xl font-bold text-[var(--text-main)]"
+        style={{ fontFamily: 'Manrope, sans-serif' }}
+      >
+        Configure & Run
+      </h3>
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label className="block text-sm uppercase tracking-wide text-slate-400 mb-2">
+        <label className="block text-sm uppercase tracking-wide text-[var(--text-muted)] mb-2">
           Min Support (0.0 - 1.0)
         </label>
         <input
@@ -64,12 +71,13 @@ function ConfigForm({ onRun, isConnected}) {
           name="minSupp"
           value={config.minSupp}
           onChange={handleChange}
-          className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none focus:border-cyan-400"
+          className="w-full rounded-xl bg-[var(--surface)] px-4 py-3 text-[var(--text-main)] outline-none focus:ring-2"
+          style={{ '--tw-ring-color': 'var(--primary-soft)' }}
         />
       </div>
 
       <div>
-        <label className="block text-sm uppercase tracking-wide text-slate-400 mb-2">
+        <label className="block text-sm uppercase tracking-wide text-[var(--text-muted)] mb-2">
           Min Confidence (0.0 - 1.0)
         </label>
         <input
@@ -78,12 +86,13 @@ function ConfigForm({ onRun, isConnected}) {
           name="minConf"
           value={config.minConf}
           onChange={handleChange}
-          className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none focus:border-cyan-400"
+          className="w-full rounded-xl bg-[var(--surface)] px-4 py-3 text-[var(--text-main)] outline-none focus:ring-2"
+          style={{ '--tw-ring-color': 'var(--primary-soft)' }}
         />
       </div>
 
       <div>
-        <label className="block text-sm uppercase tracking-wide text-slate-400 mb-2">
+        <label className="block text-sm uppercase tracking-wide text-[var(--text-muted)] mb-2">
           Min Z-Score
         </label>
         <input
@@ -91,12 +100,13 @@ function ConfigForm({ onRun, isConnected}) {
           name="minZScore"
           value={config.minZScore}
           onChange={handleChange}
-          className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none focus:border-cyan-400"
+          className="w-full rounded-xl bg-[var(--surface)] px-4 py-3 text-[var(--text-main)] outline-none focus:ring-2"
+          style={{ '--tw-ring-color': 'var(--primary-soft)' }}
         />
       </div>
 
       <div>
-        <label className="block text-sm uppercase tracking-wide text-slate-400 mb-2">
+        <label className="block text-sm uppercase tracking-wide text-[var(--text-muted)] mb-2">
           Max Set Size
         </label>
         <input
@@ -104,41 +114,42 @@ function ConfigForm({ onRun, isConnected}) {
           name="maxSetSize"
           value={config.maxSetSize}
           onChange={handleChange}
-          className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none focus:border-cyan-400"
+          className="w-full rounded-xl bg-[var(--surface)] px-4 py-3 text-[var(--text-main)] outline-none focus:ring-2"
+          style={{ '--tw-ring-color': 'var(--primary-soft)' }}
         />
       </div>
     </div>
 
-    <div className="mt-6 rounded-2xl border border-slate-800 bg-black/30 p-4 space-y-4">
-      <label className="flex items-center gap-3 text-slate-200">
+    <div className="mt-6 rounded-2xl bg-[var(--surface)] p-4 space-y-4">
+      <label className="flex items-center gap-3 text-[var(--text-main)]">
         <input
           type="checkbox"
           name="findMutualExclusiveSets"
           checked={config.findMutualExclusiveSets}
           onChange={handleChange}
-          className="h-4 w-4 accent-cyan-400"
+          className="h-4 w-4 accent-[var(--primary)]"
         />
         Find Mutual Exclusive Sets
       </label>
 
-      <label className="flex items-center gap-3 text-slate-200">
+      <label className="flex items-center gap-3 text-[var(--text-main)]">
         <input
           type="checkbox"
           name="findConditionalMutualExclusiveSets"
           checked={config.findConditionalMutualExclusiveSets}
           onChange={handleChange}
-          className="h-4 w-4 accent-cyan-400"
+          className="h-4 w-4 accent-[var(--primary)]"
         />
         Find Conditional Mutual Exclusive Sets
       </label>
 
-      <label className="flex items-center gap-3 text-slate-200">
+      <label className="flex items-center gap-3 text-[var(--text-main)]">
         <input
           type="checkbox"
           name="sortByPathway"
           checked={config.sortByPathway}
           onChange={handleChange}
-          className="h-4 w-4 accent-cyan-400"
+          className="h-4 w-4 accent-[var(--primary)]"
         />
         Sort By Pathway
       </label>
@@ -146,14 +157,17 @@ function ConfigForm({ onRun, isConnected}) {
 
     <div className="flex flex-col md:flex-row gap-4 mt-6">
       <button
-        className="flex-1 rounded-xl bg-slate-700 px-5 py-3 font-semibold text-white hover:bg-slate-600"
+        className="flex-1 rounded-xl bg-[var(--secondary-soft)] px-5 py-3 font-semibold text-[var(--secondary)] hover:opacity-90"
         onClick={handleSaveConfig}
       >
         Save Configuration
       </button>
 
       <button
-        className="flex-1 rounded-xl bg-cyan-400 px-5 py-3 font-bold text-slate-950 hover:bg-cyan-300 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400"
+        className="flex-1 rounded-xl px-5 py-3 font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
+        style={{
+          background: 'linear-gradient(135deg, var(--primary), var(--primary-soft))'
+        }}
         onClick={onRun}
         disabled={!isConnected}
       >
