@@ -11,7 +11,9 @@ const stompClient = new StompJs.Client({
 function App() {
     const [connected, setConnected] = useState(false);
     const [output, setOutput] = useState(null); 
+    const [statusMessage, setStatusMessage] = useState('Waiting for action...');
     const [selectedFile, setSelectedFile] = useState(null);
+    const [isUnformatted, setIsUnformatted] = useState(false);
 
     //to subscribe to server
     useEffect(() => {
@@ -39,7 +41,7 @@ function App() {
             }
         };
     }, []);
-//asdasdasa
+
     function connect() {
         stompClient.activate();
     }
@@ -51,7 +53,9 @@ function App() {
     }
 
     function runAlgorithm() {
-        console.log("Config saved. Sending Start command...");
+        setOutput(null);
+        setStatusMessage('Running algorithm...');
+        console.log("Sending Start command...");
         stompClient.publish({
             destination: "/app/memnarjar/start"
         });
@@ -79,30 +83,35 @@ function App() {
             return;
         }
         
-        const CHUNK_SIZE = 1024 * 1024; // 1MB chunks
-        const totalChunks = Math.ceil(selectedFile.size / CHUNK_SIZE)+1;
+        // Convert the entire file to Base64 first to avoid corrupting data padding during chunking
+        const fileBase64 = await toBase64(selectedFile);
+        const rawBase64 = fileBase64.split(",")[1];
+
+        // Reduce chunk size to avoid exceeding WebSocket message size limits (common default is 64KB).
+        // 1MB is too large for many default server configurations.
+        const CHUNK_SIZE = 60 * 1024; // 60KB string chunks
+        const totalChunks = Math.ceil(rawBase64.length / CHUNK_SIZE);
         const fileName = selectedFile.name;
 
-        console.log(`Starting upload: ${fileName} (${selectedFile.size} bytes), Total chunks: ${totalChunks}`);
+        console.log(`Starting upload: ${fileName} (Base64 length: ${rawBase64.length}), Total chunks: ${totalChunks}`);
         for (let i = 0; i < totalChunks; i++) {
             const start = i * CHUNK_SIZE;
-            const end = Math.min(selectedFile.size, start + CHUNK_SIZE);
-            const chunk = selectedFile.slice(start, end);
-            
-            const chunkBase64 = await toBase64(chunk);
-            const rawBase64 = chunkBase64.split(",")[1];
+            const end = Math.min(rawBase64.length, start + CHUNK_SIZE);
+            const chunk = rawBase64.slice(start, end);
 
             stompClient.publish({
                 destination: "/app/memnarjar/datainput",
                 body: JSON.stringify({
                     name: fileName,
-                    base64: rawBase64,
+                    base64: chunk,
                     chunkIndex: i,
-                    totalChunks: totalChunks
+                    totalChunks: totalChunks,
+                    isUnformatted: isUnformatted // <-- Send the boolean to the backend
                 })
             });
 
-            console.log(`Uploaded chunk ${i + 1}/${totalChunks} (Size: ${chunk.size})`);            // Small delay to ensure server processes
+            console.log(`Uploaded chunk ${i + 1}/${totalChunks}`);
+            // Small delay to ensure server processes
             await new Promise(r => setTimeout(r, 50)); 
         }
         console.log("Upload Complete.");
@@ -110,9 +119,25 @@ function App() {
 
 
     function onStatusUpdate(status) {
-        const response = JSON.parse(status.body);
-        console.log("Received Output");
-        setOutput(response.output); 
+        let message = 'Status update received.';
+        let responseOutput = '';
+
+        try {
+            const response = JSON.parse(status.body);
+            message = response?.message || message;
+            responseOutput = response?.output || '';
+        } catch (e) {
+            // Fallback in case the server sends plain text instead of JSON
+            message = status.body;
+        }
+
+        console.log('Status update:', message);
+        setStatusMessage(message);
+
+        // Only show the result template after algorithm completion.
+        if (message.startsWith('FINISHED')) {
+            setOutput(responseOutput);
+        }
     }
 
     const toBase64 = file => new Promise((resolve, reject) => {
@@ -137,10 +162,26 @@ const handleFileSelection = (e) => {
                     <div className="connection-status" style={{textAlign: 'right', marginBottom: '10px'}}>
                         Status: <strong style={{color: connected ? 'green' : 'red'}}>{connected ? "Connected" : "Disconnected"}</strong>
                     </div>
+                    <div className="connection-status" style={{ marginBottom: '10px' }}>
+                        Server Message: <strong>{statusMessage}</strong>
+                    </div>
 
                     {/* Step 1: File Upload Section */}
                     <div className="card file-upload-section">
                         <h3>1. Upload Data</h3>
+                        <div className="info-card" style={{ backgroundColor: '#eaf4f4', padding: '15px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.95em', color: '#333', border: '1px solid #cce3e3' }}>
+                            <strong>Required Data Format:</strong>
+                            <p style={{ marginTop: '8px', marginBottom: '8px' }}>
+                                MEMNAR accepts datasets which have Patient IDs in the first column followed by mutations that
+                                occurred in that particular patient all separated by space. So the dataset should be in current format:
+                            </p>
+                            <pre style={{ margin: '10px 0', padding: '10px', backgroundColor: '#f8f9fa', border: '1px solid #ccc', borderRadius: '4px', fontFamily: 'monospace' }}>
+                                {"P1 m1 m2 m3\nP2 m3 m1 m4"}
+                            </pre>
+                            <p style={{ marginBottom: 0 }}>
+                                Where P1 P2 are patient IDs and m1, m2, m3, m4 are mutation names.
+                            </p>
+                        </div>
                         <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                             <input type="file" onChange={handleFileSelection} />
                             <button 
@@ -151,9 +192,19 @@ const handleFileSelection = (e) => {
                                 Save File to Server
                             </button>
                         </div>
-                    </div>
+                            {/* NEW CHECKBOX */}
+                            <div style={{ marginTop: '15px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                <input 
+                                    type="checkbox" 
+                                    id="isUnformatted" 
+                                    checked={isUnformatted} 
+                                    onChange={(e) => setIsUnformatted(e.target.checked)} 
+                                />
+                                <label htmlFor="isUnformatted">My data is unformatted (Run DataConverter)</label>
+                            </div>
+                        </div>
 
-                    <hr />
+                    <hr/>
 
                     {/* Step 2: Config Section */}
                     <div className="config-section">

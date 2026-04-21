@@ -14,7 +14,7 @@ function ConfigForm({ onRun, isConnected}) {
     });
     
     useEffect(() => {
-        fetch('/api/config')
+        fetch('http://localhost:8080/api/config')
             .then(res => res.json())
             .then(data => { if (data) setConfig(data); })
             .catch(err => console.error("Failed to load config", err));
@@ -31,7 +31,7 @@ function ConfigForm({ onRun, isConnected}) {
     // Button 1: Save Configuration Only
     const handleSaveConfig = async () => {
         try {
-            const response = await fetch('/api/config', {
+            const response = await fetch('http://localhost:8080/api/config', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(config)
@@ -39,7 +39,7 @@ function ConfigForm({ onRun, isConnected}) {
             if (response.ok) {
                 alert("Configuration Saved!");
             } else {
-                alert("Failed to save config.");
+                alert(`Failed to save config. Server responded with status: ${response.status}`);
             }
         } catch (error) {
             console.error("Error:", error);
