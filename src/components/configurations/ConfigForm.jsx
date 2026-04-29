@@ -1,23 +1,63 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Client } from '@stomp/stompjs';
 
 function ConfigForm({ onRun, isConnected}) {
     const [config, setConfig] = useState({
+        datasetName: "",
         minSupp: 0.1,
         minConf: 0.5,
         findConditionalMutualExclusiveSets: true,
         findMutualExclusiveSets: true,
         minZScore: -10,
         maxSetSize: 6,
-        pValueCutoff: 1.0,
+        pvalueCutoff: 1.0,
         sortByPathway: false,
-        tumorsOfInterest: "other"
+        tumorsOfInterest: "other",
+        timeLimit: 0
     });
+    const stompClientRef = useRef(null);
     
     useEffect(() => {
-        fetch('http://localhost:8080/api/config')
-            .then(res => res.json())
-            .then(data => { if (data) setConfig(data); })
-            .catch(err => console.error("Failed to load config", err));
+    // Initialize the STOMP client
+        const client = new Client({
+            brokerURL: 'ws://localhost:8080/websocket-connect', // Ensure this matches your backend host/port
+            onConnect: () => {
+                console.log('Connected to WebSocket for Config');
+                
+                // 1. Subscribe to the config topic so we get the data when it's fetched or updated
+                client.subscribe('/memnarjar/config', (message) => {
+                    try {
+                        const data = JSON.parse(message.body);
+                        if (data) {
+                            setConfig(data);
+                        }
+                    } catch (error) {
+                        console.error("Failed to parse WebSocket message:", error);
+                    }
+                });
+
+                // 2. Once connected and subscribed, ask the server for the current config
+                client.publish({ destination: '/app/config/get' });
+            },
+            onStompError: (frame) => {
+                console.error('Broker reported error: ' + frame.headers['message']);
+                console.error('Additional details: ' + frame.body);
+            },
+            onWebSocketError: (error) => {
+                console.error('Error with websocket', error);
+            }
+        });
+
+        // Activate the connection
+        client.activate();
+        stompClientRef.current = client;
+
+        // Cleanup on component unmount
+        return () => {
+            if (stompClientRef.current) {
+                stompClientRef.current.deactivate();
+            }
+        };
     }, []);
 
     const handleChange = (e) => {
@@ -27,29 +67,41 @@ function ConfigForm({ onRun, isConnected}) {
             [name]: type === 'checkbox' ? checked : value
         }));
     };
-    
+
     // Button 1: Save Configuration Only
-    const handleSaveConfig = async () => {
-        try {
-            const response = await fetch('http://localhost:8080/api/config', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+    const handleSaveConfig = () => {
+        if (stompClientRef.current && stompClientRef.current.connected) {
+            // Send the updated config over WebSocket
+            stompClientRef.current.publish({
+                destination: '/app/config/save',
                 body: JSON.stringify(config)
             });
-            if (response.ok) {
-                alert("Configuration Saved!");
-            } else {
-                alert(`Failed to save config. Server responded with status: ${response.status}`);
-            }
-        } catch (error) {
-            console.error("Error:", error);
+            alert("Configuration save request sent!");
+            // Note: The UI will automatically update if the server broadcasts the saved config back to '/memnarjar/config'
+        } else {
+            alert("Cannot save config: WebSocket is disconnected.");
         }
     };
+    
+    // 2. THE FIX: Stop rendering here if config is null! 
+    // This prevents the React crash.
+    if (!config) {
+        return (
+            <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+                <p>Loading configuration...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="config-card" style={{ padding: '20px', border: '1px solid #ccc' }}>
             <h3>2. Configure & Run</h3>
             
+            <div className="form-group-row">
+                <label>Dataset Name:</label>
+                <input type="text" name="datasetName" value={config.datasetName || ''} onChange={handleChange} />
+            </div>
+
             <div className="form-group-row">
                 <label>Min Support (0.0 - 1.0):</label>
                 <input type="number" step="0.01" name="minSupp" value={config.minSupp} onChange={handleChange} />
@@ -69,6 +121,21 @@ function ConfigForm({ onRun, isConnected}) {
                 <label>Max Set Size (Integer):</label>
                 <input type="number" name="maxSetSize" value={config.maxSetSize} onChange={handleChange} />
             </div>
+
+        <div className="form-group-row">
+            <label>P-Value Cutoff:</label>
+            <input type="number" step="0.01" name="pvalueCutoff" value={config.pvalueCutoff ?? ''} onChange={handleChange} />
+        </div>
+
+        <div className="form-group-row">
+            <label>Tumors of Interest:</label>
+            <input type="text" name="tumorsOfInterest" value={config.tumorsOfInterest || ''} onChange={handleChange} />
+        </div>
+
+        <div className="form-group-row">
+            <label>Time Limit:</label>
+            <input type="number" name="timeLimit" value={config.timeLimit} onChange={handleChange} />
+        </div>
 
             <hr/>
 
