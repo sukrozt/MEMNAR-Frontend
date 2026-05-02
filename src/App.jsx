@@ -14,6 +14,8 @@ function App() {
     const [statusMessage, setStatusMessage] = useState('Waiting for action...');
     const [selectedFile, setSelectedFile] = useState(null);
     const [isUnformatted, setIsUnformatted] = useState(false);
+    const [logs, setLogs] = useState([]);
+    const [isFileSaved, setIsFileSaved] = useState(false);
 
     //to subscribe to server
     useEffect(() => {
@@ -23,6 +25,11 @@ function App() {
             stompClient.subscribe("/memnarjar/status", (status) => {
                 onStatusUpdate(status);
             });
+        };
+
+        stompClient.onWebSocketClose = () => {
+            setConnected(false);
+            console.log("WebSocket disconnected.");
         };
 
         stompClient.onWebSocketError = (error) => {
@@ -54,6 +61,10 @@ function App() {
     //21032026
     
     function runAlgorithm() {
+        if (!stompClient.connected) {
+            alert("Not connected to the server! Please wait or refresh.");
+            return;
+        }
         setOutput(null);
         setStatusMessage('Running algorithm...');
         console.log("Sending Start command...");
@@ -65,6 +76,10 @@ function App() {
     async function uploadData(selectedFile) {
         if (!selectedFile) return;
         
+        if (!stompClient.connected) {
+            console.error("Not connected to the server.");
+            return;
+        }
         const out = await toBase64(selectedFile);
         const rawBase64 = out.split(",")[1];
 
@@ -81,6 +96,11 @@ function App() {
     async function handleFileUpload() {
         if (!selectedFile) {
             alert("Please select a file first!");
+            return;
+        }
+
+        if (!stompClient.connected) {
+            alert("Not connected to the server! Please wait or refresh.");
             return;
         }
         
@@ -116,6 +136,7 @@ function App() {
             await new Promise(r => setTimeout(r, 50)); 
         }
         console.log("Upload Complete.");
+        setIsFileSaved(true);
     }
 
 //21.03.26 5. adım icin ekliyorum;
@@ -134,6 +155,7 @@ function App() {
 
         console.log('Status update:', message);
         setStatusMessage(message);
+        setLogs(prev => [...prev, message]);
 
         // Only show the result template after algorithm completion.
         if (message.startsWith('FINISHED')) {
@@ -151,6 +173,7 @@ function App() {
 const handleFileSelection = (e) => {
         if (e.target.files && e.target.files[0]) {
             setSelectedFile(e.target.files[0]);
+            setIsFileSaved(false);
         }
     }
 
@@ -204,6 +227,12 @@ const handleFileSelection = (e) => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        {output ? (
+          <div className="col-span-1 xl:col-span-2 bg-[var(--surface-container)] rounded-2xl p-6 shadow-sm">
+              <ResultForm output={output} onBack={() => setOutput(null)} />
+          </div>
+        ) : (
+          <>
 <section className="bg-[var(--surface-container)] rounded-2xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-5">
 <div className="w-10 h-10 rounded-full bg-[var(--secondary-soft)] text-[var(--secondary)] flex items-center justify-center font-bold">
@@ -223,6 +252,7 @@ const handleFileSelection = (e) => {
 <p className="text-[var(--secondary)] text-lg mb-4">Select file</p>
             <input
               type="file"
+              accept=".txt,text/plain"
               onChange={handleFileSelection}
 
 className="block w-full text-sm text-[var(--secondary)] file:mr-4 file:rounded-xl file:border-0 file:bg-[var(--surface-soft)] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[var(--primary)] hover:file:bg-[var(--secondary-soft)]"              />
@@ -234,9 +264,6 @@ className="block w-full text-sm text-[var(--secondary)] file:mr-4 file:rounded-x
                         Server Message: <strong>{statusMessage}</strong>
                     </div>
 
-                    {/* Step 1: File Upload Section */}
-                    <div className="card file-upload-section">
-                        <h3>1. Upload Data</h3>
                         <div className="info-card" style={{ backgroundColor: '#eaf4f4', padding: '15px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.95em', color: '#333', border: '1px solid #cce3e3' }}>
                             <strong>Required Data Format:</strong>
                             <p style={{ marginTop: '8px', marginBottom: '8px' }}>
@@ -250,18 +277,8 @@ className="block w-full text-sm text-[var(--secondary)] file:mr-4 file:rounded-x
                                 Where P1 P2 are patient IDs and m1, m2, m3, m4 are mutation names.
                             </p>
                         </div>
-                        <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                            <input type="file" onChange={handleFileSelection} />
-                            <button 
-                                className="btn btn-primary" 
-                                onClick={handleFileUpload}
-                                disabled={!connected || !selectedFile}
-                            >
-                                Save File to Server
-                            </button>
-                        </div>
                             {/* NEW CHECKBOX */}
-                            <div style={{ marginTop: '15px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <div style={{ marginTop: '15px', display: 'flex', alignItems: 'center', gap: '5px', justifyContent: 'center' }}>
                                 <input 
                                     type="checkbox" 
                                     id="isUnformatted" 
@@ -270,7 +287,6 @@ className="block w-full text-sm text-[var(--secondary)] file:mr-4 file:rounded-x
                                 />
                                 <label htmlFor="isUnformatted">My data is unformatted (Run DataConverter)</label>
                             </div>
-                        </div>
             <button
               onClick={handleFileUpload}
               disabled={!selectedFile || !connected}
@@ -284,20 +300,11 @@ style={{
         </section>
 
 <section className="bg-[var(--surface-container)] rounded-2xl p-6 shadow-sm">
-          <ConfigForm onRun={runAlgorithm} isConnected={connected} />
+          <ConfigForm onRun={runAlgorithm} isConnected={connected} isFileSaved={isFileSaved} />
         </section>
+        </>
+        )}
       </div>
-
-                    <hr/>
-
-                    {/* Step 2: Config Section */}
-                    <div className="config-section">
-                        <ConfigForm onRun={runAlgorithm} isConnected={connected}/>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
 
 <section className="mt-8 bg-[var(--surface-container)] rounded-2xl p-6 shadow-sm">        <div className="flex items-center gap-3 mb-5">
 <div className="w-10 h-10 rounded-full bg-[var(--secondary-soft)] text-[var(--secondary)] flex items-center justify-center font-bold">

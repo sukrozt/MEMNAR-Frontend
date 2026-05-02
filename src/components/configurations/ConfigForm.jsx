@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function ConfigForm({ onRun, isConnected}) {
+function ConfigForm({ onRun, isConnected, isFileSaved }) {
     const [config, setConfig] = useState({
         minSupp: 0.1,
         minConf: 0.5,
@@ -12,11 +12,16 @@ function ConfigForm({ onRun, isConnected}) {
         sortByPathway: false,
         tumorsOfInterest: "other"
     });
+    const [isConfigSaved, setIsConfigSaved] = useState(false);
     
     useEffect(() => {
         fetch('http://localhost:8080/api/config')
             .then(res => res.json())
-            .then(data => { if (data) setConfig(data); })
+            .then(data => { 
+                if (data) {
+                    setConfig(data);
+                } 
+            })
             .catch(err => console.error("Failed to load config", err));
     }, []);
 
@@ -26,6 +31,7 @@ function ConfigForm({ onRun, isConnected}) {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
+        setIsConfigSaved(false);
     };
     
     // Button 1: Save Configuration Only
@@ -38,6 +44,7 @@ function ConfigForm({ onRun, isConnected}) {
             });
             if (response.ok) {
                 alert("Configuration Saved!");
+                setIsConfigSaved(true);
             } else {
                 alert(`Failed to save config. Server responded with status: ${response.status}`);
             }
@@ -169,7 +176,8 @@ function ConfigForm({ onRun, isConnected}) {
           background: 'linear-gradient(135deg, var(--primary), var(--primary-soft))'
         }}
         onClick={onRun}
-        disabled={!isConnected}
+        disabled={!isConnected || !isFileSaved || !isConfigSaved}
+        title={!isConnected ? "Not connected to server" : (!isFileSaved ? "Upload and save your file first" : (!isConfigSaved ? "Save your configuration first" : ""))}
       >
         Run Algorithm
       </button>
