@@ -1,16 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function ConfigForm({ onRun, isConnected, isFileSaved }) {
     const [config, setConfig] = useState({
+        datasetName: "",
         minSupp: 0.1,
         minConf: 0.5,
         findConditionalMutualExclusiveSets: true,
         findMutualExclusiveSets: true,
         minZScore: -10,
         maxSetSize: 6,
-        pValueCutoff: 1.0,
+        pvalueCutoff: 1.0,
         sortByPathway: false,
         tumorsOfInterest: "other",
+        timeLimit: 0,
         unformatted: true
     });
     const [isConfigSaved, setIsConfigSaved] = useState(false);
@@ -34,7 +36,7 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
         }));
         setIsConfigSaved(false);
     };
-    
+
     // Button 1: Save Configuration Only
     const handleSaveConfig = async () => {
         try {
