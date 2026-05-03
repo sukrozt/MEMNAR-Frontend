@@ -10,7 +10,8 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
         maxSetSize: 6,
         pValueCutoff: 1.0,
         sortByPathway: false,
-        tumorsOfInterest: "other"
+        tumorsOfInterest: "other",
+        unformatted: true
     });
     const [isConfigSaved, setIsConfigSaved] = useState(false);
     
@@ -160,6 +161,17 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
         />
         Sort By Pathway
       </label>
+
+        <label className="flex items-center gap-3 text-[var(--text-main)]">
+          <input
+            type="checkbox"
+            name="unformatted"
+            checked={!!config.unformatted}
+            onChange={handleChange}
+            className="h-4 w-4 accent-[var(--primary)]"
+          />
+          My data is unformatted (Run DataConverter)
+        </label>
     </div>
 
     <div className="flex flex-col md:flex-row gap-4 mt-6">
