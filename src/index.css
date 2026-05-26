@@ -27,3 +27,9 @@ body {
   color: var(--text-main);
   background: var(--surface);
 }
+
+#outputframe {
+    min-height: 50vh;
+    height: 100%;
+    width: 100%;
+}

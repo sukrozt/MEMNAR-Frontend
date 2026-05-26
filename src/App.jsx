@@ -142,23 +142,31 @@ function App() {
     function onStatusUpdate(status) {
         let message = 'Status update received.';
         let responseOutput = '';
+        var d = new Date();
+        var isFinished;
 
         try {
             const response = JSON.parse(status.body);
             message = response?.message || message;
             responseOutput = response?.output || '';
+            isFinished = message.startsWith('FINISHED');
+
+            if (!isFinished) {
+                message = "\[" + d.toLocaleString() + "\] " + message + " - " + responseOutput;
+            }
         } catch (e) {
             // Fallback in case the server sends plain text instead of JSON
             message = status.body;
         }
 
         console.log('Status update:', message);
-        setStatusMessage(message);
-        setLogs(prev => [...prev, message]);
 
         // Only show the result template after algorithm completion.
-        if (message.startsWith('FINISHED')) {
+        if (isFinished) {
             setOutput(responseOutput);
+        } else {
+            setStatusMessage(message);
+            setLogs(prev => [...prev, message]);
         }
     }
 
@@ -240,7 +248,7 @@ const handleFileSelection = (e) => {
 <div className="bg-[var(--log-bg)] rounded-2xl p-5 h-80 overflow-auto font-mono text-sm">
               {logs.length > 0 ? (
             logs.map((log, index) => (
-<div key={index} className="text-[var(--log-text)] mb-2 whitespace-pre-wrap">                {log}
+<div key={index} className="text-[var(--log-text)] mb-2 whitespace-pre-wrap">    {log}
               </div>
             ))
           ) : (
