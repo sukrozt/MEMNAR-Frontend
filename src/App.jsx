@@ -226,16 +226,15 @@ function App() {
           path="/"
           element={
             <Dashboard
-              connected={connected}
-              selectedFile={selectedFile}
-              logs={logs}
-              output={output}
-              statusMessage={statusMessage}
-              isFileSaved={isFileSaved}
-              handleFileSelection={handleFileSelection}
-              handleFileUpload={handleFileUpload}
-              runAlgorithm={runAlgorithm}
-            />
+  connected={connected}
+  selectedFile={selectedFile}
+  logs={logs}
+  output={output}
+  isFileSaved={isFileSaved}
+  handleFileSelection={handleFileSelection}
+  handleFileUpload={handleFileUpload}
+  runAlgorithm={runAlgorithm}
+/>
           }
         />
 

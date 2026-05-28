@@ -4,10 +4,12 @@ export default function Dashboard({
   connected,
   selectedFile,
   logs,
+  output,
+  isFileSaved,
   handleFileSelection,
   handleFileUpload,
   runAlgorithm,
-}) {
+})  {
   return (
     <main className="flex-1 p-8">
       <div className="mb-8 flex items-center justify-between">
@@ -75,7 +77,11 @@ export default function Dashboard({
         </section>
 
         <section className="bg-[var(--surface-container)] rounded-2xl p-6 shadow-sm">
-          <ConfigForm onRun={runAlgorithm} isConnected={connected} />
+          <ConfigForm
+  onRun={runAlgorithm}
+  isConnected={connected}
+  isFileSaved={isFileSaved}
+/>
         </section>
       </div>
 
