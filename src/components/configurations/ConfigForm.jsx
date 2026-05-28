@@ -1,22 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-function ConfigForm({ onRun, isConnected}) {
+function ConfigForm({ onRun, isConnected, isFileSaved }) {
     const [config, setConfig] = useState({
+        datasetName: "",
         minSupp: 0.1,
         minConf: 0.5,
         findConditionalMutualExclusiveSets: true,
         findMutualExclusiveSets: true,
         minZScore: -10,
         maxSetSize: 6,
-        pValueCutoff: 1.0,
+        pvalueCutoff: 1.0,
         sortByPathway: false,
-        tumorsOfInterest: "other"
+        tumorsOfInterest: "other",
+        timeLimit: 0,
+        unformatted: true
     });
+    const [isConfigSaved, setIsConfigSaved] = useState(false);
     
     useEffect(() => {
-        fetch('/api/config')
+        fetch('http://localhost:8080/api/config')
             .then(res => res.json())
-            .then(data => { if (data) setConfig(data); })
+            .then(data => { 
+                if (data) {
+                    setConfig(data);
+                } 
+            })
             .catch(err => console.error("Failed to load config", err));
     }, []);
 
@@ -26,20 +34,22 @@ function ConfigForm({ onRun, isConnected}) {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
+        setIsConfigSaved(false);
     };
-    
+
     // Button 1: Save Configuration Only
     const handleSaveConfig = async () => {
         try {
-            const response = await fetch('/api/config', {
+            const response = await fetch('http://localhost:8080/api/config', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(config)
             });
             if (response.ok) {
                 alert("Configuration Saved!");
+                setIsConfigSaved(true);
             } else {
-                alert("Failed to save config.");
+                alert(`Failed to save config. Server responded with status: ${response.status}`);
             }
         } catch (error) {
             console.error("Error:", error);
@@ -153,6 +163,17 @@ function ConfigForm({ onRun, isConnected}) {
         />
         Sort By Pathway
       </label>
+
+        <label className="flex items-center gap-3 text-[var(--text-main)]">
+          <input
+            type="checkbox"
+            name="unformatted"
+            checked={!!config.unformatted}
+            onChange={handleChange}
+            className="h-4 w-4 accent-[var(--primary)]"
+          />
+          My data is unformatted (Run DataConverter)
+        </label>
     </div>
 
     <div className="flex flex-col md:flex-row gap-4 mt-6">
@@ -169,7 +190,8 @@ function ConfigForm({ onRun, isConnected}) {
           background: 'linear-gradient(135deg, var(--primary), var(--primary-soft))'
         }}
         onClick={onRun}
-        disabled={!isConnected}
+        disabled={!isConnected || !isFileSaved || !isConfigSaved}
+        title={!isConnected ? "Not connected to server" : (!isFileSaved ? "Upload and save your file first" : (!isConfigSaved ? "Save your configuration first" : ""))}
       >
         Run Algorithm
       </button>

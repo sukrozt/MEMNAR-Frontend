@@ -9,6 +9,7 @@ import Results from "./pages/Results";
 import ProcessLogs from "./pages/ProcessLogs";
 import RunArchive from "./pages/RunArchive";
 import AboutUs from "./pages/AboutUs";
+import ResultForm from "./components/configurations/ResultForm";
 
 const stompClient = new StompJs.Client({
   brokerURL: "ws://localhost:8080/websocket-connect",
@@ -35,8 +36,10 @@ function SidebarLink({ to, children }) {
 function App() {
   const [connected, setConnected] = useState(false);
   const [output, setOutput] = useState(null);
+  const [statusMessage, setStatusMessage] = useState("Waiting for action...");
   const [selectedFile, setSelectedFile] = useState(null);
   const [logs, setLogs] = useState([]);
+  const [isFileSaved, setIsFileSaved] = useState(false);
 
   useEffect(() => {
     stompClient.onConnect = (frame) => {
@@ -46,6 +49,11 @@ function App() {
       stompClient.subscribe("/memnarjar/status", (status) => {
         onStatusUpdate(status);
       });
+    };
+
+    stompClient.onWebSocketClose = () => {
+      setConnected(false);
+      console.log("WebSocket disconnected.");
     };
 
     stompClient.onWebSocketError = (error) => {
@@ -68,8 +76,15 @@ function App() {
   }, []);
 
   function runAlgorithm() {
+    if (!stompClient.connected) {
+      alert("Not connected to the server! Please wait or refresh.");
+      return;
+    }
+
+    setOutput(null);
     setLogs([]);
-    console.log("Config saved. Sending Start command...");
+    setStatusMessage("Running algorithm...");
+    console.log("Sending Start command...");
 
     stompClient.publish({
       destination: "/app/memnarjar/start",
@@ -82,44 +97,76 @@ function App() {
       return;
     }
 
-    const CHUNK_SIZE = 1024 * 1024;
-    const totalChunks = Math.ceil(selectedFile.size / CHUNK_SIZE) + 1;
+    if (!stompClient.connected) {
+      alert("Not connected to the server! Please wait or refresh.");
+      return;
+    }
+
+    const fileBase64 = await toBase64(selectedFile);
+    const rawBase64 = fileBase64.split(",")[1];
+    const CHUNK_SIZE = 60 * 1024;
+    const totalChunks = Math.ceil(rawBase64.length / CHUNK_SIZE);
     const fileName = selectedFile.name;
+
+    console.log(
+      `Starting upload: ${fileName} (Base64 length: ${rawBase64.length}), Total chunks: ${totalChunks}`
+    );
 
     for (let i = 0; i < totalChunks; i++) {
       const start = i * CHUNK_SIZE;
-      const end = Math.min(selectedFile.size, start + CHUNK_SIZE);
-      const chunk = selectedFile.slice(start, end);
-
-      const chunkBase64 = await toBase64(chunk);
-      const rawBase64 = chunkBase64.split(",")[1];
+      const end = Math.min(rawBase64.length, start + CHUNK_SIZE);
+      const chunk = rawBase64.slice(start, end);
 
       stompClient.publish({
         destination: "/app/memnarjar/datainput",
         body: JSON.stringify({
           name: fileName,
-          base64: rawBase64,
+          base64: chunk,
           chunkIndex: i,
-          totalChunks: totalChunks,
+          totalChunks,
         }),
       });
 
+      console.log(`Uploaded chunk ${i + 1}/${totalChunks}`);
       await new Promise((r) => setTimeout(r, 50));
     }
 
     console.log("Upload Complete.");
+    setIsFileSaved(true);
+    setStatusMessage("File saved to server.");
   }
 
   function onStatusUpdate(status) {
-    const response = JSON.parse(status.body);
-    console.log(response);
+    let message = "Status update received.";
+    let responseOutput = "";
+    let isFinished = false;
 
-    if (response.message) {
-      setLogs((prev) => [...prev, response.message]);
+    try {
+      const response = JSON.parse(status.body);
+      message = response?.message || message;
+      responseOutput = response?.output || "";
+      isFinished = message.startsWith("FINISHED") || message.includes("-----FINISHED-----");
+
+      if (!isFinished) {
+        const time = new Date().toLocaleString();
+        message = `[${time}] ${message}${responseOutput ? ` - ${responseOutput}` : ""}`;
+      }
+    } catch (e) {
+      message = status.body;
+      isFinished = message.startsWith("FINISHED") || message.includes("-----FINISHED-----");
     }
 
-    if (response.output && response.message?.includes("FINISHED")) {
-      setOutput(response.output);
+    console.log("Status update:", message);
+
+    if (isFinished) {
+      if (responseOutput) {
+        setOutput(responseOutput);
+      }
+      setStatusMessage("Algorithm finished.");
+      setLogs((prev) => [...prev, message]);
+    } else {
+      setStatusMessage(message);
+      setLogs((prev) => [...prev, message]);
     }
   }
 
@@ -134,6 +181,8 @@ function App() {
   function handleFileSelection(e) {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
+      setIsFileSaved(false);
+      setStatusMessage("File selected. Save it to the server before running MEMNAR.");
     }
   }
 
@@ -181,6 +230,8 @@ function App() {
               selectedFile={selectedFile}
               logs={logs}
               output={output}
+              statusMessage={statusMessage}
+              isFileSaved={isFileSaved}
               handleFileSelection={handleFileSelection}
               handleFileUpload={handleFileUpload}
               runAlgorithm={runAlgorithm}
@@ -190,7 +241,18 @@ function App() {
 
         <Route path="/about-memnar" element={<AboutMemnar />} />
         <Route path="/sequencing" element={<Sequencing />} />
-        <Route path="/results" element={<Results />} />
+        <Route
+          path="/results"
+          element={
+            output ? (
+              <main className="flex-1 p-8">
+                <ResultForm output={output} onBack={() => setOutput(null)} />
+              </main>
+            ) : (
+              <Results />
+            )
+          }
+        />
         <Route path="/process-logs" element={<ProcessLogs logs={logs} />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/run-archive" element={<RunArchive logs={logs} />} />
