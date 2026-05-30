@@ -1,3 +1,28 @@
+function Dashboard({ 
+  connected, 
+  selectedFile, 
+  logs, 
+  output, 
+  isFileSaved, 
+  handleFileSelection, 
+  handleFileUpload, 
+  runAlgorithm, 
+  statusMessage,
+  isUploading
+}) {
+  return (
+    // ...
+    <FileUploadForm 
+      connected={connected}
+      selectedFile={selectedFile}
+      handleFileSelection={handleFileSelection}
+      handleFileUpload={handleFileUpload}
+      statusMessage={statusMessage}
+      isUploading={isUploading}
+    />
+    // ...
+  );
+}
 import React from 'react';
 
 function FileUploadForm({
@@ -5,7 +30,8 @@ function FileUploadForm({
     selectedFile,
     statusMessage,
     handleFileUpload,
-    connected
+    connected,
+    isUploading
 }) {
     return (
         <section className="bg-[var(--surface-container)] rounded-2xl p-6 shadow-sm">
@@ -55,11 +81,11 @@ function FileUploadForm({
                 
                 <button
                     onClick={handleFileUpload}
-                    disabled={!selectedFile || !connected}
+                    disabled={!selectedFile || !connected || isUploading}
                     className="mt-6 w-full rounded-xl px-5 py-3 font-bold text-white transition disabled:cursor-not-allowed disabled:opacity-50"
                     style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-soft))' }}
                 >
-                    Save File to Server
+                    {isUploading ? "Uploading file, please wait..." : "Save File to Server"}
                 </button>
             </div>
         </section>

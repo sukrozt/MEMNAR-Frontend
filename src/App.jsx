@@ -9,6 +9,7 @@ import Results from "./pages/Results";
 import ProcessLogs from "./pages/ProcessLogs";
 import RunArchive from "./pages/RunArchive";
 import AboutUs from "./pages/AboutUs";
+import { useLogs } from "./hooks/useLogs";
 
 const stompClient = new StompJs.Client({
   brokerURL: "ws://localhost:8080/websocket-connect",
@@ -36,10 +37,11 @@ function App() {
   const [connected, setConnected] = useState(false);
   const [output, setOutput] = useState(null);
   const [jobFinished, setJobFinished] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("Waiting for action...");
+  const [statusMessage, setStatusMessage] = useState("Waiting for file selection...");
   const [selectedFile, setSelectedFile] = useState(null);
-  const [logs, setLogs] = useState([]);
+  const { logs, addLog, clearLogs } = useLogs();
   const [isFileSaved, setIsFileSaved] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     let link = document.querySelector("link[rel~='icon']");
@@ -91,8 +93,7 @@ function App() {
 
     setOutput(null);
     setJobFinished(false);
-    setLogs([]);
-    setStatusMessage("Running algorithm...");
+    clearLogs();
     console.log("Sending Start command...");
 
     stompClient.publish({
@@ -111,38 +112,49 @@ function App() {
       return;
     }
 
-    const fileBase64 = await toBase64(selectedFile);
-    const rawBase64 = fileBase64.split(",")[1];
-    const CHUNK_SIZE = 60 * 1024;
-    const totalChunks = Math.ceil(rawBase64.length / CHUNK_SIZE);
-    const fileName = selectedFile.name;
-
-    console.log(
-      `Starting upload: ${fileName} (Base64 length: ${rawBase64.length}), Total chunks: ${totalChunks}`
-    );
-
-    for (let i = 0; i < totalChunks; i++) {
-      const start = i * CHUNK_SIZE;
-      const end = Math.min(rawBase64.length, start + CHUNK_SIZE);
-      const chunk = rawBase64.slice(start, end);
-
-      stompClient.publish({
-        destination: "/app/memnarjar/datainput",
-        body: JSON.stringify({
-          name: fileName,
-          base64: chunk,
-          chunkIndex: i,
-          totalChunks,
-        }),
-      });
-
-      console.log(`Uploaded chunk ${i + 1}/${totalChunks}`);
-      await new Promise((r) => setTimeout(r, 50));
+    setIsUploading(true);
+    try {
+      const fileBase64 = await toBase64(selectedFile);
+      const rawBase64 = fileBase64.split(",")[1];
+      const CHUNK_SIZE = 60 * 1024;
+      const totalChunks = Math.ceil(rawBase64.length / CHUNK_SIZE);
+      const fileName = selectedFile.name;
+  
+      console.log(
+        `Starting upload: ${fileName} (Base64 length: ${rawBase64.length}), Total chunks: ${totalChunks}`
+      );
+  
+      setStatusMessage("Uploading file, please wait...");
+      await new Promise((r) => setTimeout(r, 500));
+  
+      for (let i = 0; i < totalChunks; i++) {
+        const start = i * CHUNK_SIZE;
+        const end = Math.min(rawBase64.length, start + CHUNK_SIZE);
+        const chunk = rawBase64.slice(start, end);
+  
+        stompClient.publish({
+          destination: "/app/memnarjar/datainput",
+          body: JSON.stringify({
+            name: fileName,
+            base64: chunk,
+            chunkIndex: i,
+            totalChunks,
+          }),
+        });
+  
+        console.log(`Uploaded chunk ${i + 1}/${totalChunks}`);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+  
+      console.log("Upload Complete.");
+      setIsFileSaved(true);
+      setStatusMessage("File saved to server.");
+    } catch (error) {
+      console.error("Upload error:", error);
+      setStatusMessage("Upload failed.");
+    } finally {
+      setIsUploading(false);
     }
-
-    console.log("Upload Complete.");
-    setIsFileSaved(true);
-    setStatusMessage("File saved to server.");
   }
 
   function onStatusUpdate(status) {
@@ -169,11 +181,9 @@ function App() {
 
     if (isFinished) {
       setJobFinished(true);
-      setStatusMessage("Algorithm finished.");
-      setLogs((prev) => [...prev, message]);
+      addLog(message);
     } else {
-      setStatusMessage(message);
-      setLogs((prev) => [...prev, message]);
+      addLog(message);
     }
   }
 
@@ -241,6 +251,8 @@ function App() {
   handleFileSelection={handleFileSelection}
   handleFileUpload={handleFileUpload}
   runAlgorithm={runAlgorithm}
+  statusMessage={statusMessage}
+              isUploading={isUploading}
 />
           }
         />

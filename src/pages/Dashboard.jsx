@@ -9,6 +9,8 @@ export default function Dashboard({
   handleFileSelection,
   handleFileUpload,
   runAlgorithm,
+  isUploading,
+  statusMessage,
 })  {
   return (
     <main className="flex-1 p-8">
@@ -62,16 +64,20 @@ export default function Dashboard({
               {selectedFile ? selectedFile.name : "No file selected"}
             </div>
 
+            <div className="mt-4 text-sm text-[var(--primary)] font-semibold">
+              Server Message: {statusMessage}
+            </div>
+
             <button
               onClick={handleFileUpload}
-              disabled={!selectedFile || !connected}
+              disabled={!selectedFile || !connected || isUploading}
               className="mt-6 w-full rounded-xl px-5 py-3 font-bold text-white transition disabled:cursor-not-allowed disabled:opacity-50"
               style={{
                 background:
                   "linear-gradient(135deg, var(--primary), var(--primary-soft))",
               }}
             >
-              Save File to Server
+              {isUploading ? "Uploading file, please wait..." : "Save File to Server"}
             </button>
           </div>
         </section>
