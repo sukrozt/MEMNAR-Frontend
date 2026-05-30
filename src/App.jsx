@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import * as StompJs from "@stomp/stompjs";
 
 import Dashboard from "./pages/Dashboard";
 import AboutMemnar from "./pages/AboutMemnar";
-import Sequencing from "./pages/Sequencing";
 import Results from "./pages/Results";
 import ProcessLogs from "./pages/ProcessLogs";
-import RunArchive from "./pages/RunArchive";
 import AboutUs from "./pages/AboutUs";
 import { useLogs } from "./hooks/useLogs";
 
@@ -34,6 +32,7 @@ function SidebarLink({ to, children }) {
 }
 
 function App() {
+  const navigate = useNavigate();
   const [connected, setConnected] = useState(false);
   const [output, setOutput] = useState(null);
   const [jobFinished, setJobFinished] = useState(false);
@@ -84,6 +83,13 @@ function App() {
       }
     };
   }, []);
+
+  // route to results page when job is finished
+  useEffect(() => {
+    if (jobFinished) {
+      navigate("/results");
+    }
+  }, [jobFinished, navigate]);
 
   function runAlgorithm() {
     if (!stompClient.connected) {
@@ -219,13 +225,11 @@ function App() {
           </p>
 
           <nav className="mt-10 space-y-3 flex flex-col">
-            <SidebarLink to="/">Dashboard</SidebarLink>
+            <SidebarLink to="/">Workspace</SidebarLink>
             <SidebarLink to="/about-memnar">About MEMNAR</SidebarLink>
-            <SidebarLink to="/sequencing">Sequencing</SidebarLink>
-            <SidebarLink to="/results">Results</SidebarLink>
+            {jobFinished && <SidebarLink to="/results">Results</SidebarLink>}
             <SidebarLink to="/process-logs">Process Logs</SidebarLink>
-            <SidebarLink to="/run-archive">Run Archive</SidebarLink>
-            <SidebarLink to="/about-us">About Us</SidebarLink>
+            <SidebarLink to="/about-us">About the Project</SidebarLink>
           </nav>
         </div>
 
@@ -258,7 +262,6 @@ function App() {
         />
 
         <Route path="/about-memnar" element={<AboutMemnar />} />
-        <Route path="/sequencing" element={<Sequencing />} />
         <Route
           path="/results"
           element={
@@ -282,7 +285,6 @@ function App() {
         />
         <Route path="/process-logs" element={<ProcessLogs logs={logs} />} />
         <Route path="/about-us" element={<AboutUs />} />
-        <Route path="/run-archive" element={<RunArchive logs={logs} />} />
       </Routes>
     </div>
   );

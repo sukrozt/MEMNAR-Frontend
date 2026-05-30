@@ -16,6 +16,7 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
         unformatted: true
     });
     const [isConfigSaved, setIsConfigSaved] = useState(false);
+    const [saveMessage, setSaveMessage] = useState("Please save configuration to continue.");
     
     useEffect(() => {
         fetch('http://localhost:8080/api/config')
@@ -23,6 +24,7 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
             .then(data => { 
                 if (data) {
                     setConfig(data);
+                    setSaveMessage("Loaded configuration from server. Please save to confirm.");
                 } 
             })
             .catch(err => console.error("Failed to load config", err));
@@ -35,10 +37,12 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
             [name]: type === 'checkbox' ? checked : value
         }));
         setIsConfigSaved(false);
+        setSaveMessage("Unsaved changes...");
     };
 
     // Button 1: Save Configuration Only
     const handleSaveConfig = async () => {
+        setSaveMessage("Saving configuration...");
         try {
             const response = await fetch('http://localhost:8080/api/config', {
                 method: 'POST',
@@ -46,13 +50,14 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
                 body: JSON.stringify(config)
             });
             if (response.ok) {
-                alert("Configuration Saved!");
+                setSaveMessage("Configuration saved to server.");
                 setIsConfigSaved(true);
             } else {
-                alert(`Failed to save config. Server responded with status: ${response.status}`);
+                setSaveMessage(`Failed to save config. Status: ${response.status}`);
             }
         } catch (error) {
             console.error("Error:", error);
+            setSaveMessage("Error saving configuration.");
         }
     };
 
@@ -176,6 +181,10 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
         </label>
     </div>
 
+    <div className="mt-4 text-sm text-[var(--primary)] font-semibold">
+      Config Message: {saveMessage}
+    </div>
+
     <div className="flex flex-col md:flex-row gap-4 mt-6">
       <button
         className="flex-1 rounded-xl bg-[var(--secondary-soft)] px-5 py-3 font-semibold text-[var(--secondary)] hover:opacity-90"
@@ -191,7 +200,13 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
         }}
         onClick={onRun}
         disabled={!isConnected || !isFileSaved || !isConfigSaved}
-        title={!isConnected ? "Not connected to server" : (!isFileSaved ? "Upload and save your file first" : (!isConfigSaved ? "Save your configuration first" : ""))}
+        title={
+          !isConnected ? "Not connected to server" :
+          (!isFileSaved && !isConfigSaved) ? "you should upload file and configuration first" :
+          !isFileSaved ? "Upload your data first" :
+          !isConfigSaved ? "Save your configuration first" :
+          ""
+        }
       >
         Run Algorithm
       </button>

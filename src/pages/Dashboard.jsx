@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import ConfigForm from "../components/configurations/ConfigForm";
 
 export default function Dashboard({
@@ -12,6 +13,14 @@ export default function Dashboard({
   isUploading,
   statusMessage,
 })  {
+  // Log penceresinin en altını referans almak için
+  const logBottomRef = useRef(null);
+
+  useEffect(() => {
+    // Yeni log geldiğinde (logs dizisi değiştiğinde) en alta yumuşak bir şekilde kaydır
+    logBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [logs]);
+
   return (
     <main className="flex-1 p-8">
       <div className="mb-8 flex items-center justify-between">
@@ -118,6 +127,8 @@ export default function Dashboard({
           ) : (
             <div className="text-[var(--secondary)]">No logs yet</div>
           )}
+          {/* Kaydırma hedefine odaklanacak görünmez element */}
+          <div ref={logBottomRef} />
         </div>
       </section>
     </main>

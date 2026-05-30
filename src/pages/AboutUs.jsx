@@ -2,7 +2,7 @@ export default function AboutUs() {
   return (
     <main className="flex-1 p-6 xl:p-8 overflow-y-auto">
       <p className="text-xs tracking-[0.3em] uppercase text-[var(--primary)] font-semibold">
-        Workspace / About Us
+        Workspace / About the Project
       </p>
 
       <h1 className="text-4xl xl:text-5xl font-extrabold mt-3 text-[#6d6075]">
