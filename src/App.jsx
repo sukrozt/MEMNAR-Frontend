@@ -9,7 +9,6 @@ import Results from "./pages/Results";
 import ProcessLogs from "./pages/ProcessLogs";
 import RunArchive from "./pages/RunArchive";
 import AboutUs from "./pages/AboutUs";
-import ResultForm from "./components/configurations/ResultForm";
 
 const stompClient = new StompJs.Client({
   brokerURL: "ws://localhost:8080/websocket-connect",
@@ -36,12 +35,21 @@ function SidebarLink({ to, children }) {
 function App() {
   const [connected, setConnected] = useState(false);
   const [output, setOutput] = useState(null);
+  const [jobFinished, setJobFinished] = useState(false);
   const [statusMessage, setStatusMessage] = useState("Waiting for action...");
   const [selectedFile, setSelectedFile] = useState(null);
   const [logs, setLogs] = useState([]);
   const [isFileSaved, setIsFileSaved] = useState(false);
 
   useEffect(() => {
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = '/favicon.png';
+
     stompClient.onConnect = (frame) => {
       setConnected(true);
       console.log("Connected: " + frame);
@@ -82,6 +90,7 @@ function App() {
     }
 
     setOutput(null);
+    setJobFinished(false);
     setLogs([]);
     setStatusMessage("Running algorithm...");
     console.log("Sending Start command...");
@@ -145,7 +154,7 @@ function App() {
       const response = JSON.parse(status.body);
       message = response?.message || message;
       responseOutput = response?.output || "";
-      isFinished = message.startsWith("FINISHED") || message.includes("-----FINISHED-----");
+      isFinished = message.startsWith("FINISHED") || message.includes("-----FINISHED-----") || response.FINISHED === true;
 
       if (!isFinished) {
         const time = new Date().toLocaleString();
@@ -153,15 +162,13 @@ function App() {
       }
     } catch (e) {
       message = status.body;
-      isFinished = message.startsWith("FINISHED") || message.includes("-----FINISHED-----");
+      isFinished = message.startsWith("FINISHED") || message.includes("-----FINISHED-----") || message.includes("FINISHED: true");
     }
 
     console.log("Status update:", message);
 
     if (isFinished) {
-      if (responseOutput) {
-        setOutput(responseOutput);
-      }
+      setJobFinished(true);
       setStatusMessage("Algorithm finished.");
       setLogs((prev) => [...prev, message]);
     } else {
@@ -243,9 +250,18 @@ function App() {
         <Route
           path="/results"
           element={
-            output ? (
-              <main className="flex-1 p-8">
-                <ResultForm output={output} onBack={() => setOutput(null)} />
+            jobFinished ? (
+              <main className="flex-1 p-8 flex flex-col h-screen">
+                <div className="mb-4">
+                  <button onClick={() => setJobFinished(false)} className="text-[var(--primary)] hover:underline font-medium">
+                    &larr; Back
+                  </button>
+                </div>
+                <iframe
+                  src="http://localhost:8080/results"
+                  title="MEMNAR Results"
+                  className="w-full flex-1 border-0 rounded-xl bg-white shadow-sm"
+                />
               </main>
             ) : (
               <Results />
