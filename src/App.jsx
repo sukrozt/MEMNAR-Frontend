@@ -7,6 +7,7 @@ import AboutMemnar from "./pages/AboutMemnar";
 import Results from "./pages/Results";
 import ProcessLogs from "./pages/ProcessLogs";
 import AboutUs from "./pages/AboutUs";
+import Account from "./pages/Account";
 import { useLogs } from "./hooks/useLogs";
 
 const stompClient = new StompJs.Client({
@@ -230,6 +231,7 @@ function App() {
             {jobFinished && <SidebarLink to="/results">Results</SidebarLink>}
             <SidebarLink to="/process-logs">Process Logs</SidebarLink>
             <SidebarLink to="/about-us">About the Project</SidebarLink>
+            <SidebarLink to="/account">Account</SidebarLink>
           </nav>
         </div>
 
@@ -285,6 +287,7 @@ function App() {
         />
         <Route path="/process-logs" element={<ProcessLogs logs={logs} />} />
         <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/account" element={<Account />} />
       </Routes>
     </div>
   );
