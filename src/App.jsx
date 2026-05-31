@@ -8,6 +8,8 @@ import Results from "./pages/Results";
 import ProcessLogs from "./pages/ProcessLogs";
 import AboutUs from "./pages/AboutUs";
 import Account from "./pages/Account";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import { useLogs } from "./hooks/useLogs";
 
 const stompClient = new StompJs.Client({
@@ -42,6 +44,7 @@ function App() {
   const { logs, addLog, clearLogs } = useLogs();
   const [isFileSaved, setIsFileSaved] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     let link = document.querySelector("link[rel~='icon']");
@@ -233,14 +236,33 @@ function App() {
             <SidebarLink to="/about-us">About the Project</SidebarLink>
             <SidebarLink to="/account">Account</SidebarLink>
           </nav>
+
+          <div className="flex flex-col gap-2 mt-8 border-t border-[var(--surface-soft)] pt-6">
+            {isLoggedIn ? (
+              <button onClick={() => { setIsLoggedIn(false); navigate("/login"); }} className="w-full text-center py-2.5 rounded-xl text-sm font-bold text-[#b67b84] bg-[#f8e8ea] hover:bg-[#f1d7dc] transition-all">
+                Log Out
+              </button>
+            ) : (
+              <>
+                <Link to="/login" className="w-full text-center py-2.5 rounded-xl text-sm font-bold text-[var(--primary)] hover:bg-[var(--surface-soft)] transition-all">
+                  Log In
+                </Link>
+                <Link to="/signup" className="w-full text-center py-2.5 rounded-xl text-sm font-bold text-white transition-all shadow-sm hover:opacity-90" style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-soft))' }}>
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
         </div>
 
-        <div className="text-sm text-slate-500">
-          {connected ? (
-            <span className="text-[var(--primary)]">● Connected</span>
-          ) : (
-            <span className="text-[#b67b84]">● Disconnected</span>
-          )}
+        <div className="flex flex-col gap-6">
+          <div className="text-sm text-slate-500">
+            {connected ? (
+              <span className="text-[var(--primary)]">● Connected</span>
+            ) : (
+              <span className="text-[#b67b84]">● Disconnected</span>
+            )}
+          </div>
         </div>
       </aside>
 
@@ -266,28 +288,13 @@ function App() {
         <Route path="/about-memnar" element={<AboutMemnar />} />
         <Route
           path="/results"
-          element={
-            jobFinished ? (
-              <main className="flex-1 p-8 flex flex-col h-screen">
-                <div className="mb-4">
-                  <button onClick={() => setJobFinished(false)} className="text-[var(--primary)] hover:underline font-medium">
-                    &larr; Back
-                  </button>
-                </div>
-                <iframe
-                  src="http://localhost:8080/results"
-                  title="MEMNAR Results"
-                  className="w-full flex-1 border-0 rounded-xl bg-white shadow-sm"
-                />
-              </main>
-            ) : (
-              <Results />
-            )
-          }
+          element={<Results />}
         />
         <Route path="/process-logs" element={<ProcessLogs logs={logs} />} />
         <Route path="/about-us" element={<AboutUs />} />
-        <Route path="/account" element={<Account />} />
+        <Route path="/account" element={<Account isLoggedIn={isLoggedIn} />} />
+        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </div>
   );
