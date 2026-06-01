@@ -60,6 +60,17 @@ export default function Results() {
     };
   }, [activeTab, normalOutput, conditionalOutput]);
 
+  function downloadResults() {
+    const element = document.createElement("a");
+    const file = new Blob([activeTab === "normal" ? normalOutput : conditionalOutput], {
+      type: "text/plain"
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = "output.html";
+    document.body.appendChild(element);
+    element.click();
+  }
+
   const hasResults = normalOutput || conditionalOutput;
   const currentOutput = activeTab === "normal" ? normalOutput : conditionalOutput;
 
@@ -76,28 +87,37 @@ export default function Results() {
 
         <div className="flex flex-col sm:flex-row items-center gap-3">
           {hasResults && (
-            <div className="flex bg-[#f3edf6] p-1 rounded-2xl">
+            <>
               <button
-                onClick={() => setActiveTab("normal")}
-                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                  activeTab === "normal"
-                    ? "bg-white text-[var(--primary)] shadow-sm"
-                    : "text-[#8b7a93] hover:text-[#6d6075]"
-                }`}
+                onClick={() => downloadResults()}
+                className="px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all shadow-sm hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-soft))' }}
               >
-                Normal Results
+                Download Results
               </button>
-              <button
-                onClick={() => setActiveTab("conditional")}
-                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                  activeTab === "conditional"
-                    ? "bg-white text-[var(--primary)] shadow-sm"
-                    : "text-[#8b7a93] hover:text-[#6d6075]"
-                }`}
-              >
-                Conditional Results
-              </button>
-            </div>
+              <div className="flex bg-[#f3edf6] p-1 rounded-2xl">
+                <button
+                  onClick={() => setActiveTab("normal")}
+                  className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                    activeTab === "normal"
+                      ? "bg-white text-[var(--primary)] shadow-sm"
+                      : "text-[#8b7a93] hover:text-[#6d6075]"
+                  }`}
+                >
+                  Normal Results
+                </button>
+                <button
+                  onClick={() => setActiveTab("conditional")}
+                  className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                    activeTab === "conditional"
+                      ? "bg-white text-[var(--primary)] shadow-sm"
+                      : "text-[#8b7a93] hover:text-[#6d6075]"
+                  }`}
+                >
+                  Conditional Results
+                </button>
+              </div>
+            </>
           )}
 
           <button
