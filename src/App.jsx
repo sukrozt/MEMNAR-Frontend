@@ -39,6 +39,7 @@ function App() {
   const [connected, setConnected] = useState(false);
   const [output, setOutput] = useState(null);
   const [jobFinished, setJobFinished] = useState(false);
+  const [displayResults, setDisplayResults] = useState(false);
   const [statusMessage, setStatusMessage] = useState("Waiting for file selection...");
   const [selectedFile, setSelectedFile] = useState(null);
   const { logs, addLog, clearLogs } = useLogs();
@@ -90,10 +91,11 @@ function App() {
 
   // route to results page when job is finished
   useEffect(() => {
-    if (jobFinished) {
+    if (jobFinished && displayResults) {
+      setJobFinished(false);
       navigate("/results");
     }
-  }, [jobFinished, navigate]);
+  }, [jobFinished, displayResults, navigate]);
 
   function runAlgorithm() {
     if (!stompClient.connected) {
@@ -102,6 +104,7 @@ function App() {
     }
 
     setOutput(null);
+    setDisplayResults(false);
     setJobFinished(false);
     clearLogs();
     console.log("Sending Start command...");
@@ -191,6 +194,7 @@ function App() {
 
     if (isFinished) {
       setJobFinished(true);
+      setDisplayResults(true);
       addLog(message);
     } else {
       addLog(message);
@@ -231,7 +235,7 @@ function App() {
           <nav className="mt-10 space-y-3 flex flex-col">
             <SidebarLink to="/">Workspace</SidebarLink>
             <SidebarLink to="/about-memnar">About MEMNAR</SidebarLink>
-            {jobFinished && <SidebarLink to="/results">Results</SidebarLink>}
+            {displayResults && <SidebarLink to="/results">Results</SidebarLink>}
             <SidebarLink to="/process-logs">Process Logs</SidebarLink>
             <SidebarLink to="/about-us">About the Project</SidebarLink>
             <SidebarLink to="/account">Account</SidebarLink>
