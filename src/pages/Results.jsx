@@ -60,13 +60,31 @@ export default function Results() {
     };
   }, [activeTab, normalOutput, conditionalOutput]);
 
-  function downloadResults() {
+  async function downloadResults() {
     const element = document.createElement("a");
-    const file = new Blob([activeTab === "normal" ? normalOutput : conditionalOutput], {
+    downloadFile(element, activeTab === "normal" ? normalOutput : conditionalOutput, "output.html");
+
+    try {
+      const rulesTxt = await fetch("http://localhost:8080/results/rules");
+      if (rulesTxt.ok) {
+        downloadFile(element, await rulesTxt.text(), "rules.txt");
+      }
+
+      const itemsetsTxt = await fetch("http://localhost:8080/results/itemsets");
+      if (itemsetsTxt.ok) {
+        downloadFile(element, await itemsetsTxt.text(), "itemsets.txt");
+      }
+    } catch (error) {
+      console.error("Sonuçları indirirken hata oluştu:", error);
+    }
+  }
+
+  async function downloadFile(element, fileContent, fileName) {
+    const file = new Blob([fileContent], {
       type: "text/plain"
     });
     element.href = URL.createObjectURL(file);
-    element.download = "output.html";
+    element.download = fileName;
     document.body.appendChild(element);
     element.click();
   }
