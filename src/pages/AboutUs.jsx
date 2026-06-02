@@ -143,6 +143,18 @@ export default function AboutUs() {
           </p>
         </section>
 
+        <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
+          <h2 className="text-2xl font-bold text-[#4f4557] mb-4">
+            Data Retention Policy
+          </h2>
+
+          <p className="text-base leading-8 text-[#4d4d4d]">
+            This page keeps the execution history of MEMNAR runs. Process logs,
+            are stored for on your browser's local storage and not on the server.
+            Configuration parameters are stored on the server.
+          </p>
+        </section>
+
         <section className="bg-[#f7f3f8] rounded-3xl p-5 border border-[#e6ddec]">
           <h2 className="text-xl font-bold text-[#4f4557] mb-3">
             Acknowledgement
