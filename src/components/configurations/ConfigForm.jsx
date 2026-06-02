@@ -19,7 +19,12 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
     const [saveMessage, setSaveMessage] = useState("Please save configuration to continue.");
     
     useEffect(() => {
-        fetch('http://localhost:8080/api/config')
+        const token = localStorage.getItem('token');
+        fetch('http://localhost:8080/api/config', {
+            headers: {
+                ...(token && { 'Authorization': `Bearer ${token}` })
+            }
+        })
             .then(res => res.json())
             .then(data => { 
                 if (data) {
@@ -44,9 +49,13 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
     const handleSaveConfig = async () => {
         setSaveMessage("Saving configuration...");
         try {
+            const token = localStorage.getItem('token');
             const response = await fetch('http://localhost:8080/api/config', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    ...(token && { 'Authorization': `Bearer ${token}` })
+                },
                 body: JSON.stringify(config)
             });
             if (response.ok) {

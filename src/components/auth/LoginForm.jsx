@@ -23,8 +23,9 @@ export default function LoginForm({ setIsLoggedIn }) {
 
       if (response.ok) {
         const data = await response.json();
-        // İleride Token'ı kaydetmek isterseniz: localStorage.setItem("token", data.token);
-        // Şimdilik sadece ana sayfaya yönlendiriyoruz
+        // Token'ı localStorage'a "token" adıyla kaydediyoruz:
+        localStorage.setItem("token", data.token);
+        
         setIsLoggedIn(true);
         navigate("/");
       } else {

@@ -45,7 +45,11 @@ function App() {
   const { logs, addLog, clearLogs } = useLogs();
   const [isFileSaved, setIsFileSaved] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const token = localStorage.getItem("token");
+    return token !== null && token !== "undefined" && token !== "";
+  });
 
   useEffect(() => {
     let link = document.querySelector("link[rel~='icon']");
@@ -87,6 +91,17 @@ function App() {
         stompClient.deactivate();
       }
     };
+  }, []);
+
+  // LocalStorage'daki token değişikliklerini dinle (Sekmeler arası senkronizasyon için)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(token !== null && token !== "undefined" && token !== "");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   // route to results page when job is finished
@@ -243,7 +258,7 @@ function App() {
 
           <div className="flex flex-col gap-2 mt-8 border-t border-[var(--surface-soft)] pt-6">
             {isLoggedIn ? (
-              <button onClick={() => { setIsLoggedIn(false); navigate("/login"); }} className="w-full text-center py-2.5 rounded-xl text-sm font-bold text-[#b67b84] bg-[#f8e8ea] hover:bg-[#f1d7dc] transition-all">
+              <button onClick={() => { localStorage.removeItem("token"); setIsLoggedIn(false); navigate("/login"); }} className="w-full text-center py-2.5 rounded-xl text-sm font-bold text-[#b67b84] bg-[#f8e8ea] hover:bg-[#f1d7dc] transition-all">
                 Log Out
               </button>
             ) : (
