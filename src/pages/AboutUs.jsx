@@ -1,4 +1,26 @@
+import { 
+  FaReact, 
+  FaDatabase, 
+  FaFilePdf, 
+  FaCheckCircle, 
+  FaUniversity, 
+  FaCode, 
+  FaServer, 
+  FaCogs 
+} from "react-icons/fa";
+import { SiSpringboot } from "react-icons/si";
+
 export default function AboutUs() {
+  const scopeItems = [
+    "Understanding the original MEMNAR workflow, configuration, and HTML outputs",
+    "Integration of the MEMNAR JAR pipeline into a browser-based interface",
+    "Configurable frontend controls (minsupp, minconf, mutual exclusive sets)",
+    "Dynamic generation of configuration files based on user-defined parameters",
+    "Dataset upload functionality for formatted mutation datasets",
+    "DataConverter.jar integration for preprocessing raw mutation datasets",
+    "Real-time monitoring of intermediate execution logs and progress tracking"
+  ];
+
   return (
     <main className="flex-1 p-6 xl:p-8 overflow-y-auto">
       <p className="text-xs tracking-[0.3em] uppercase text-[var(--primary)] font-semibold">
@@ -9,175 +31,130 @@ export default function AboutUs() {
         About the Project
       </h1>
 
-      <div className="mt-8 space-y-6 max-w-6xl">
-        <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <h2 className="text-2xl font-bold text-[#4f4557] mb-4">
-              MEMNAR Web Server
-            </h2>
-            <a className="ml-auto mb-4" href="MEMNAR Web Server Poster.pdf" target='_blank' rel='noopener noreferrer'>
-              <button
-                onClick={() => downloadResults()}
-                className="px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all shadow-sm hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-soft))' }}
-              >
+      <div className="mt-8 space-y-8 max-w-6xl">
+        {/* HERO SECTION */}
+        <section className="relative overflow-hidden rounded-3xl p-8 sm:p-10 shadow-lg border border-[#ece7ef]" style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-soft))' }}>
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="max-w-2xl text-white">
+              <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">
+                MEMNAR Web Server
+              </h2>
+              <p className="text-base sm:text-lg text-white/90 leading-relaxed mb-4">
+                Transforming the MEMNAR command-line algorithm into an interactive, accessible web-based platform for discovering mutually exclusive mutation patterns in cancer genomics.
+              </p>
+              <p className="text-sm text-white/80">
+                A modern solution that replaces manual configuration with a seamless graphical user interface.
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <a href="MEMNAR Web Server Poster.pdf" target='_blank' rel='noopener noreferrer' className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold text-[var(--primary)] bg-white transition-all shadow-md hover:scale-105 hover:bg-gray-50">
+                <FaFilePdf className="text-xl text-red-500" />
                 Download Poster
-              </button>
-            </a>
+              </a>
+            </div>
           </div>
-
-          <p className="text-base leading-8 text-[#4d4d4d]">
-            This project aims to develop a web-based platform for the MEMNAR
-            algorithm, which was originally designed as a command-line
-            bioinformatics tool for discovering mutually exclusive mutation
-            patterns in cancer genomics data.
-          </p>
-
-          <p className="text-base leading-8 text-[#4d4d4d] mt-4">
-            The original MEMNAR algorithm analyzes patient mutation datasets
-            using negative association rule mining and identifies mutually
-            exclusive and conditional mutually exclusive mutation sets. However,
-            the original implementation requires command-line usage and manual
-            configuration steps.
-          </p>
-
-          <p className="text-base leading-8 text-[#4d4d4d] mt-4">
-            In this project, we redesign MEMNAR as an interactive web platform
-            that supports dataset upload, parameter configuration, execution
-            management and result visualization through a graphical user
-            interface.
-          </p>
+          {/* Background decorations */}
+          <div className="absolute -top-24 -right-10 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -bottom-10 right-40 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl pointer-events-none"></div>
         </section>
 
         <section className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#ece7ef]">
-            <h3 className="text-xl font-bold text-[#4f4557] mb-4">
-              Project Scope
-            </h3>
-
-            <ul className="space-y-3 text-sm leading-7 text-[#555]">
-              <li>
-                • Understanding the original MEMNAR workflow including JAR
-                execution, configuration structure, dataset inputs and generated
-                HTML outputs
-              </li>
-
-              <li>
-                • Integration of the MEMNAR JAR execution pipeline into a web
-                server environment through a browser-based interface
-              </li>
-
-              <li>
-                • Development of configurable frontend controls for MEMNAR
-                parameters including minsupp, minconf,
-                FindMutualExclusiveSets and
-                FindConditionalMutualExclusiveSets
-              </li>
-
-              <li>
-                • Dynamic generation and management of MEMNAR configuration
-                files according to user-defined analysis parameters
-              </li>
-
-              <li>
-                • Implementation of dataset upload functionality for
-                preprocessed and formatted mutation datasets compatible with
-                MEMNAR
-              </li>
-
-              <li>
-                • Integration of the DataConverter.jar preprocessing workflow
-                for handling raw mutation datasets before MEMNAR execution
-              </li>
-
-              <li>
-                • Real-time monitoring of intermediate execution logs including
-                candidate set generation, filtering stages and algorithm
-                progress tracking
-              </li>
+          {/* SCOPE */}
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef] hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="p-3 bg-[#f3edf6] rounded-xl text-[var(--primary)]">
+                <FaCode className="text-xl" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#4f4557]">Project Scope</h3>
+            </div>
+            <ul className="space-y-4">
+              {scopeItems.map((item, index) => (
+                <li key={index} className="flex items-start gap-3 text-sm leading-6 text-[#555]">
+                  <FaCheckCircle className="text-emerald-500 mt-1 flex-shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
-          <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#ece7ef]">
-            <h3 className="text-xl font-bold text-[#4f4557] mb-4">
-              Technologies
-            </h3>
-
-            <ul className="space-y-3 text-sm leading-7 text-[#555]">
-              <li>• React and Vite for frontend development</li>
-
-              <li>
-                • Spring Boot for backend orchestration and API services
-              </li>
-
-              <li>
-                • WebSocket communication for real-time execution updates
-              </li>
-
-              <li>• Java-based MEMNAR and DataConverter integration</li>
-
-              <li>• Maven dependency and build management</li>
-
-              <li>
-                • Spring Data JPA for analysis and configuration management
-              </li>
-
-              <li>
-                • Interactive browser-based workflow for genomic analysis
-              </li>
+          {/* TECHNOLOGIES */}
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef] hover:shadow-md transition-shadow flex flex-col">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="p-3 bg-[#f3edf6] rounded-xl text-[var(--primary)]">
+                <FaServer className="text-xl" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#4f4557]">Technologies</h3>
+            </div>
+            
+            <div className="flex flex-wrap gap-3 mt-2">
+              <div className="flex items-center gap-2 px-4 py-2 bg-[#f0f7ff] text-[#007acc] rounded-full text-sm font-semibold border border-[#dbeafe]">
+                <FaReact className="text-lg" /> React & Vite
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-[#f2fbf5] text-[#2d7d32] rounded-full text-sm font-semibold border border-[#dcfce7]">
+                <SiSpringboot className="text-lg" /> Spring Boot
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-[#fdf5f6] text-[#b64b59] rounded-full text-sm font-semibold border border-[#fce7ea]">
+                <FaDatabase className="text-lg" /> Spring Data JPA
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-[#fef9f0] text-[#b47a16] rounded-full text-sm font-semibold border border-[#fef0d4]">
+                <FaCogs className="text-lg" /> Java MEMNAR
+              </div>
+            </div>
+            
+            <ul className="mt-8 space-y-3 text-sm leading-6 text-[#555]">
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#8b7a93]"></span> WebSocket for real-time execution updates</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#8b7a93]"></span> Maven dependency and build management</li>
+              <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#8b7a93]"></span> Interactive browser-based genomics workflow</li>
             </ul>
           </div>
         </section>
 
-        <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
-          <h2 className="text-2xl font-bold text-[#4f4557] mb-4">
-            Academic Context
-          </h2>
-
-          <p className="text-base leading-8 text-[#4d4d4d]">
-            This project is being developed as a Computer Engineering Design
-            Project at Hacettepe University under the supervision of Asst. Prof.
-            Dr. Gülden Olgun.
-          </p>
-
-          <p className="text-base leading-8 text-[#4d4d4d] mt-4">
-            The project is carried out by Şükriye Öztürk, Deniz Can Aksuoğlu
-            and İrem Sıla Ay. The main objective is to improve the accessibility
-            and usability of the MEMNAR algorithm for researchers who may not be
-            familiar with command-line tools or manual configuration processes.
-          </p>
-
-          <p className="text-base leading-8 text-[#4d4d4d] mt-4">
-            The system focuses on providing a more manageable and accessible
-            environment for cancer genomics analysis workflows by wrapping the
-            original MEMNAR execution process inside a web-based interface.
-          </p>
+        {/* ACADEMIC CONTEXT */}
+        <section className="bg-white rounded-3xl p-8 shadow-sm border border-[#ece7ef]">
+          <div className="flex flex-col md:flex-row gap-8 items-center">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="p-3 bg-[#f3edf6] rounded-xl text-[var(--primary)]">
+                  <FaUniversity className="text-xl" />
+                </div>
+                <h2 className="text-2xl font-bold text-[#4f4557]">Academic Context</h2>
+              </div>
+              <p className="text-base leading-8 text-[#4d4d4d]">
+                This project is being developed as a <strong>Computer Engineering Design Project</strong> at Hacettepe University. The main objective is to improve the accessibility and usability of the MEMNAR algorithm for researchers who may not be familiar with command-line tools.
+              </p>
+              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-[#faf7fb] p-4 rounded-2xl border border-[#ece7ef]">
+                  <p className="text-xs uppercase tracking-widest text-[#8b7a93] font-bold mb-2">Supervisor</p>
+                  <p className="font-semibold text-[#4f4557] text-lg">Asst. Prof. Dr. Gülden Olgun</p>
+                </div>
+                <div className="bg-[#faf7fb] p-4 rounded-2xl border border-[#ece7ef]">
+                  <p className="text-xs uppercase tracking-widest text-[#8b7a93] font-bold mb-2">Development Team</p>
+                  <ul className="font-semibold text-[#4f4557] space-y-1">
+                    <li>Şükriye Öztürk</li>
+                    <li>Deniz Can Aksuoğlu</li>
+                    <li>İrem Sıla Ay</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
-        <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
-          <h2 className="text-2xl font-bold text-[#4f4557] mb-4">
-            Data Retention Policy
-          </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <section className="bg-[#fffcf3] rounded-3xl p-6 shadow-sm border border-[#fef0d4]">
+            <h2 className="text-lg font-bold text-[#b47a16] mb-3">Data Retention Policy</h2>
+            <p className="text-sm leading-7 text-[#735319]">
+              Execution history and process logs are temporarily stored on your browser's local storage to ensure data privacy. Only your account details and configuration parameters are securely saved on the server.
+            </p>
+          </section>
 
-          <p className="text-base leading-8 text-[#4d4d4d]">
-            This page keeps the execution history of MEMNAR runs. Process logs,
-            are stored for on your browser's local storage and not on the server.
-            Configuration parameters are stored on the server.
-          </p>
-        </section>
-
-        <section className="bg-[#f7f3f8] rounded-3xl p-5 border border-[#e6ddec]">
-          <h2 className="text-xl font-bold text-[#4f4557] mb-3">
-            Acknowledgement
-          </h2>
-
-          <p className="text-sm leading-7 text-[#555]">
-            We would like to thank Asst. Prof. Dr. Gülden Olgun for her
-            supervision and guidance throughout the development of this project
-            and the MEMNAR research contributors for providing the original
-            algorithm and research foundation.
-          </p>
-        </section>
+          <section className="bg-[#f7f3f8] rounded-3xl p-6 shadow-sm border border-[#e6ddec]">
+            <h2 className="text-lg font-bold text-[var(--primary)] mb-3">Acknowledgement</h2>
+            <p className="text-sm leading-7 text-[#5d4e69]">
+              Special thanks to Asst. Prof. Dr. Gülden Olgun for her supervision, and the original MEMNAR research contributors for providing the foundational algorithm.
+            </p>
+          </section>
+        </div>
       </div>
     </main>
   );
