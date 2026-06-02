@@ -13,13 +13,13 @@ export default function Results() {
       setIsLoading(true);
       try {
         // Normal sonuçları çek
-        const normalRes = await fetch("http://localhost:8080/results/normal");
+        const normalRes = await fetch("https://memnar.online:8080/results/normal");
         if (normalRes.ok) {
           setNormalOutput(await normalRes.text());
         }
 
         // Conditional sonuçları çek
-        const conditionalRes = await fetch("http://localhost:8080/results/conditional");
+        const conditionalRes = await fetch("https://memnar.online:8080/results/conditional");
         if (conditionalRes.ok) {
           setConditionalOutput(await conditionalRes.text());
         }
@@ -65,12 +65,12 @@ export default function Results() {
     downloadFile(element, activeTab === "normal" ? normalOutput : conditionalOutput, "output.html");
 
     try {
-      const rulesTxt = await fetch("http://localhost:8080/results/rules");
+      const rulesTxt = await fetch("https://memnar.online:8080/results/rules");
       if (rulesTxt.ok) {
         downloadFile(element, await rulesTxt.text(), "rules.txt");
       }
 
-      const itemsetsTxt = await fetch("http://localhost:8080/results/itemsets");
+      const itemsetsTxt = await fetch("https://memnar.online:8080/results/itemsets");
       if (itemsetsTxt.ok) {
         downloadFile(element, await itemsetsTxt.text(), "itemsets.txt");
       }

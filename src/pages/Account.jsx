@@ -20,8 +20,8 @@ export default function Account({ isLoggedIn }) {
     const fetchAccountData = async () => {
       try {
         const [profileRes, configsRes] = await Promise.all([
-          axios.get("http://localhost:8080/api/history/me", authHeaders),
-          axios.get("http://localhost:8080/api/history/configs", authHeaders),
+          axios.get("https://memnar.online:8080/api/history/me", authHeaders),
+          axios.get("https://memnar.online:8080/api/history/configs", authHeaders),
         ]);
 
         setProfile(profileRes.data);

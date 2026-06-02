@@ -20,7 +20,7 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
     
     useEffect(() => {
         const token = localStorage.getItem('token');
-        fetch('http://localhost:8080/api/config', {
+        fetch('https://memnar.online:8080/api/config', {
             headers: {
                 ...(token && { 'Authorization': `Bearer ${token}` })
             }
@@ -50,7 +50,7 @@ function ConfigForm({ onRun, isConnected, isFileSaved }) {
         setSaveMessage("Saving configuration...");
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8080/api/config', {
+            const response = await fetch('https://memnar.online:8080/api/config', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',

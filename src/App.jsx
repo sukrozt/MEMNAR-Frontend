@@ -13,7 +13,7 @@ import Signup from "./pages/Signup";
 import { useLogs } from "./hooks/useLogs";
 
 const stompClient = new StompJs.Client({
-  brokerURL: "ws://localhost:8080/websocket-connect",
+  brokerURL: "ws://memnar.online:8080/websocket-connect",
 });
 
 function SidebarLink({ to, children }) {

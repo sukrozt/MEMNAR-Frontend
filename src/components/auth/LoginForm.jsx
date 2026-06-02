@@ -15,7 +15,7 @@ export default function LoginForm({ setIsLoggedIn }) {
     setStatus({ error: "", isLoading: true });
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/authenticate", {
+      const response = await fetch("https://memnar.online:8080/api/auth/authenticate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
