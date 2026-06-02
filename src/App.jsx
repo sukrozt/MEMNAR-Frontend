@@ -58,7 +58,7 @@ function App() {
 
     stompClient.onConnect = (frame) => {
       setConnected(true);
-      console.log("Connected: " + frame);
+      // console.log("Connected: " + frame);
 
       stompClient.subscribe("/memnarjar/status", (status) => {
         onStatusUpdate(status);
@@ -67,7 +67,7 @@ function App() {
 
     stompClient.onWebSocketClose = () => {
       setConnected(false);
-      console.log("WebSocket disconnected.");
+      // console.log("WebSocket disconnected.");
     };
 
     stompClient.onWebSocketError = (error) => {
@@ -107,7 +107,7 @@ function App() {
     setDisplayResults(false);
     setJobFinished(false);
     clearLogs();
-    console.log("Sending Start command...");
+    // console.log("Sending Start command...");
 
     stompClient.publish({
       destination: "/app/memnarjar/start",
@@ -133,9 +133,9 @@ function App() {
       const totalChunks = Math.ceil(rawBase64.length / CHUNK_SIZE);
       const fileName = selectedFile.name;
   
-      console.log(
-        `Starting upload: ${fileName} (Base64 length: ${rawBase64.length}), Total chunks: ${totalChunks}`
-      );
+      // console.log(
+      //   `Starting upload: ${fileName} (Base64 length: ${rawBase64.length}), Total chunks: ${totalChunks}`
+      // );
   
       setStatusMessage("Uploading file, please wait...");
       await new Promise((r) => setTimeout(r, 500));
@@ -155,11 +155,11 @@ function App() {
           }),
         });
   
-        console.log(`Uploaded chunk ${i + 1}/${totalChunks}`);
+        // console.log(`Uploaded chunk ${i + 1}/${totalChunks}`);
         await new Promise((r) => setTimeout(r, 50));
       }
   
-      console.log("Upload Complete.");
+      // console.log("Upload Complete.");
       setIsFileSaved(true);
       setStatusMessage("File saved to server.");
     } catch (error) {
@@ -190,7 +190,7 @@ function App() {
       isFinished = message.startsWith("FINISHED") || message.includes("-----FINISHED-----") || message.includes("FINISHED: true");
     }
 
-    console.log("Status update:", message);
+    // console.log("Status update:", message);
 
     if (isFinished) {
       setJobFinished(true);
