@@ -93,15 +93,15 @@ export default function Results() {
   const currentOutput = activeTab === "normal" ? normalOutput : conditionalOutput;
 
   return (
-    <main className="flex-1 p-6 xl:p-8 overflow-y-auto">
-      <p className="text-xs tracking-[0.3em] uppercase text-[var(--primary)] font-semibold">
+    <main className="flex-1 p-8 overflow-y-auto">
+      <p className="text-xs uppercase tracking-[0.25em] text-[var(--primary)] font-medium">
         Workspace / Results
       </p>
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between mt-3 mb-8 gap-4">
-        <h1 className="text-4xl xl:text-5xl font-extrabold text-[#6d6075]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <h2 className="text-3xl xl:text-4xl font-bold mt-2 leading-tight text-[#5f4b7a]">
           Analysis Results
-        </h1>
+        </h2>
 
         <div className="flex flex-col sm:flex-row items-center gap-3">
           {hasResults && (

@@ -1,12 +1,12 @@
-import { 
-  FaReact, 
-  FaDatabase, 
-  FaFilePdf, 
-  FaCheckCircle, 
-  FaUniversity, 
-  FaCode, 
-  FaServer, 
-  FaCogs 
+import {
+  FaReact,
+  FaDatabase,
+  FaFilePdf,
+  FaCheckCircle,
+  FaUniversity,
+  FaCode,
+  FaServer,
+  FaCogs
 } from "react-icons/fa";
 import { SiSpringboot } from "react-icons/si";
 
@@ -22,14 +22,14 @@ export default function AboutUs() {
   ];
 
   return (
-    <main className="flex-1 p-6 xl:p-8 overflow-y-auto">
-      <p className="text-xs tracking-[0.3em] uppercase text-[var(--primary)] font-semibold">
+    <main className="flex-1 p-8 overflow-y-auto">
+      <p className="text-xs uppercase tracking-[0.25em] text-[var(--primary)] font-medium">
         Workspace / About the Project
       </p>
 
-      <h1 className="text-4xl xl:text-5xl font-extrabold mt-3 text-[#6d6075]">
+      <h2 className="text-3xl xl:text-4xl font-bold mt-2 leading-tight text-[#5f4b7a]">
         About the Project
-      </h1>
+      </h2>
 
       <div className="mt-8 space-y-8 max-w-6xl">
         {/* HERO SECTION */}
@@ -85,7 +85,7 @@ export default function AboutUs() {
               </div>
               <h3 className="text-2xl font-bold text-[#4f4557]">Technologies</h3>
             </div>
-            
+
             <div className="flex flex-wrap gap-3 mt-2">
               <div className="flex items-center gap-2 px-4 py-2 bg-[#f0f7ff] text-[#007acc] rounded-full text-sm font-semibold border border-[#dbeafe]">
                 <FaReact className="text-lg" /> React & Vite
@@ -100,7 +100,7 @@ export default function AboutUs() {
                 <FaCogs className="text-lg" /> Java MEMNAR
               </div>
             </div>
-            
+
             <ul className="mt-8 space-y-3 text-sm leading-6 text-[#555]">
               <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#8b7a93]"></span> WebSocket for real-time execution updates</li>
               <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#8b7a93]"></span> Maven dependency and build management</li>

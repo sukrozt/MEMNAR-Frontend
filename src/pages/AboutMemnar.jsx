@@ -9,22 +9,22 @@ export default function AboutMemnar() {
   ];
 
   return (
-    <main className="flex-1 p-10 overflow-y-auto">
-      <p className="text-sm tracking-[0.35em] uppercase text-[var(--primary)] font-semibold">
-        Workspace / About
+    <main className="flex-1 p-8 overflow-y-auto">
+      <p className="text-xs uppercase tracking-[0.25em] text-[var(--primary)] font-medium">
+        Workspace / About MEMNAR
       </p>
 
-      <h1 className="text-6xl font-extrabold mt-4 text-[#6d6075]">
+      <h2 className="text-3xl xl:text-4xl font-bold mt-2 leading-tight text-[#5f4b7a]">
         About MEMNAR
-      </h1>
+      </h2>
 
-      <div className="mt-10 space-y-8 max-w-7xl">
-        <section className="bg-white rounded-3xl p-10 shadow-sm border border-[#ece7ef]">
-          <h2 className="text-3xl font-bold text-[#4f4557] mb-6">
+      <div className="mt-8 space-y-6 max-w-6xl">
+        <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
+          <h2 className="text-2xl font-bold text-[#4f4557] mb-6">
             What is MEMNAR?
           </h2>
 
-          <p className="text-lg leading-9 text-[#4d4d4d]">
+          <p className="text-[var(--text-main)] leading-9 text-[#4d4d4d]">
             MEMNAR is a computational method proposed for identifying mutually
             exclusive mutation gene sets through negative association rule
             mining. The method analyzes patient mutation data and constructs
@@ -32,7 +32,7 @@ export default function AboutMemnar() {
             rules.
           </p>
 
-          <p className="text-lg leading-9 text-[#4d4d4d] mt-6">
+          <p className="text-[var(--text-main)] leading-9 text-[#4d4d4d] mt-6">
             The motivation behind MEMNAR is based on the observation that
             certain gene mutations tend not to occur concurrently in the same
             patient. These mutual exclusivity patterns may indicate functional
@@ -42,7 +42,7 @@ export default function AboutMemnar() {
         </section>
 
         <section className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#ece7ef]">
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
             <h3 className="text-2xl font-bold text-[#4f4557] mb-5">
               Negative Association Rules
             </h3>
@@ -54,7 +54,7 @@ export default function AboutMemnar() {
               the absence of another mutation set.
             </p>
 
-            <div className="mt-6 bg-[#f7f3f8] rounded-2xl p-5 font-mono text-[#6d6075] text-lg">
+            <div className="mt-6 bg-[#f7f3f8] rounded-2xl p-5 font-mono text-[#6d6075] text-[var(--text-main)]">
               X → ¬Y
             </div>
 
@@ -64,7 +64,7 @@ export default function AboutMemnar() {
             </p>
           </div>
 
-          <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#ece7ef]">
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
             <h3 className="text-2xl font-bold text-[#4f4557] mb-5">
               Mutual Exclusivity
             </h3>
@@ -75,7 +75,7 @@ export default function AboutMemnar() {
               expected to be absent or rarely observed together.
             </p>
 
-            <div className="mt-6 bg-[#f7f3f8] rounded-2xl p-5 font-mono text-[#6d6075] text-lg">
+            <div className="mt-6 bg-[#f7f3f8] rounded-2xl p-5 font-mono text-[#6d6075] text-[var(--text-main)]">
               {"{mi} → {¬mj, ¬mk}"}
             </div>
 
@@ -87,8 +87,8 @@ export default function AboutMemnar() {
           </div>
         </section>
 
-        <section className="bg-white rounded-3xl p-10 shadow-sm border border-[#ece7ef]">
-          <h2 className="text-3xl font-bold text-[#4f4557] mb-8">
+        <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
+          <h2 className="text-2xl font-bold text-[#4f4557] mb-8">
             Algorithm Overview
           </h2>
 
@@ -98,7 +98,7 @@ export default function AboutMemnar() {
                 1
               </div>
 
-              <h4 className="font-bold text-lg text-[#4f4557] mb-3">
+              <h4 className="font-bold text-[var(--text-main)] text-[#4f4557] mb-3">
                 Frequent Itemsets
               </h4>
 
@@ -114,7 +114,7 @@ export default function AboutMemnar() {
                 2
               </div>
 
-              <h4 className="font-bold text-lg text-[#4f4557] mb-3">
+              <h4 className="font-bold text-[var(--text-main)] text-[#4f4557] mb-3">
                 Negative Itemsets
               </h4>
 
@@ -130,7 +130,7 @@ export default function AboutMemnar() {
                 3
               </div>
 
-              <h4 className="font-bold text-lg text-[#4f4557] mb-3">
+              <h4 className="font-bold text-[var(--text-main)] text-[#4f4557] mb-3">
                 Join and Filter
               </h4>
 
@@ -146,7 +146,7 @@ export default function AboutMemnar() {
                 4
               </div>
 
-              <h4 className="font-bold text-lg text-[#4f4557] mb-3">
+              <h4 className="font-bold text-[var(--text-main)] text-[#4f4557] mb-3">
                 Rule Construction
               </h4>
 
@@ -159,7 +159,7 @@ export default function AboutMemnar() {
         </section>
 
         <section className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#ece7ef]">
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
             <h3 className="text-2xl font-bold text-[#4f4557] mb-5">
               Support and Confidence
             </h3>
@@ -173,7 +173,7 @@ export default function AboutMemnar() {
             </p>
           </div>
 
-          <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#ece7ef]">
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
             <h3 className="text-2xl font-bold text-[#4f4557] mb-5">
               Statistical Significance
             </h3>
@@ -187,19 +187,19 @@ export default function AboutMemnar() {
           </div>
         </section>
 
-        <section className="bg-white rounded-3xl p-10 shadow-sm border border-[#ece7ef]">
-          <h2 className="text-3xl font-bold text-[#4f4557] mb-6">
+        <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
+          <h2 className="text-2xl font-bold text-[#4f4557] mb-6">
             Reported Evaluation
           </h2>
 
-          <p className="text-lg leading-9 text-[#4d4d4d]">
+          <p className="text-[var(--text-main)] leading-9 text-[#4d4d4d]">
             The MLSB 2017 paper evaluates MEMNAR on simulated mutation datasets
             and breast cancer somatic mutation data. In the reported simulation
             experiments, MEMNAR is compared with MEGSA, Mutex and Multi-Dendrix
             under balanced and unbalanced mutation settings.
           </p>
 
-          <p className="text-lg leading-9 text-[#4d4d4d] mt-6">
+          <p className="text-[var(--text-main)] leading-9 text-[#4d4d4d] mt-6">
             In the breast cancer analysis, the paper reports 21 significant
             mutually exclusive mutation sets. Examples include sets containing
             TP53, GATA3, CDH1 and CTCF, as well as sets related to MAPK/ERK and
@@ -207,7 +207,7 @@ export default function AboutMemnar() {
           </p>
         </section>
 
-        <section className="bg-[#f7f3f8] rounded-3xl p-8 border border-[#e6ddec]">
+        <section className="bg-[#f7f3f8] rounded-3xl p-6 border border-[#e6ddec]">
           <h2 className="text-2xl font-bold text-[#4f4557] mb-4">
             Further Reading
           </h2>
@@ -230,11 +230,11 @@ export default function AboutMemnar() {
         {/* --- SEQUENCING WORKFLOW SECTION --- */}
         <div className="my-10 border-t-2 border-[#ece7ef]"></div>
 
-        <h2 className="text-4xl font-extrabold mt-4 mb-8 text-[#6d6075]">
+        <h2 className="text-3xl font-extrabold mt-4 mb-8 text-[#6d6075]">
           Sequencing Workflow
         </h2>
 
-        <section className="bg-white rounded-3xl p-8 shadow-sm border border-[#ece7ef]">
+        <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
           <h2 className="text-2xl font-bold text-[#4f4557] mb-5">
             Dataset Preparation Pipeline
           </h2>
@@ -292,7 +292,7 @@ export default function AboutMemnar() {
         </section>
 
         <section className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#ece7ef]">
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
             <h3 className="text-2xl font-bold text-[#4f4557] mb-4">
               Input Dataset Format
             </h3>
@@ -312,7 +312,7 @@ export default function AboutMemnar() {
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#ece7ef]">
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
             <h3 className="text-2xl font-bold text-[#4f4557] mb-4">
               DataConverter Workflow
             </h3>
@@ -332,7 +332,7 @@ export default function AboutMemnar() {
           </div>
         </section>
 
-        <section className="bg-white rounded-3xl p-8 shadow-sm border border-[#ece7ef]">
+        <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
           <h2 className="text-2xl font-bold text-[#4f4557] mb-6">
             Mutation Matrix Preview
           </h2>

@@ -22,15 +22,15 @@ export default function Dashboard({
   }, [logs]);
 
   return (
-    <main className="flex-1 p-8">
+    <main className="flex-1 p-8 overflow-y-auto">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-[var(--primary)] font-medium">
-            Workspace / Analytical Dashboard
+            Workspace
           </p>
 
           <h2 className="text-3xl xl:text-4xl font-bold mt-2 leading-tight text-[#5f4b7a]">
-            Mutual Exclusivity Analysis in Cancer Genomics
+            MEMNAR - Mutually Exclusive Mutation Sets Analysis Tool
           </h2>
         </div>
 
@@ -59,10 +59,6 @@ export default function Dashboard({
           </div>
 
           <div className="rounded-2xl p-8 bg-[var(--surface)] text-center">
-            <p className="text-[var(--secondary)] text-lg mb-4">
-              Select file
-            </p>
-
             <input
               type="file"
               onChange={handleFileSelection}

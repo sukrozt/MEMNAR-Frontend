@@ -20,14 +20,14 @@ export default function ProcessLogs({ logs }) {
   }, [logs]);
 
   return (
-    <main className="flex-1 p-6 xl:p-8 overflow-y-auto">
-      <p className="text-xs tracking-[0.3em] uppercase text-[var(--primary)] font-semibold">
+    <main className="flex-1 p-8 overflow-y-auto">
+      <p className="text-xs uppercase tracking-[0.25em] text-[var(--primary)] font-medium">
         Workspace / Process Logs
       </p>
 
-      <h1 className="text-4xl xl:text-5xl font-extrabold mt-3 text-[#6d6075]">
+      <h2 className="text-3xl xl:text-4xl font-bold mt-2 leading-tight text-[#5f4b7a]">
         Process Logs
-      </h1>
+      </h2>
 
       <div className="mt-8 space-y-6 max-w-6xl">
 
@@ -46,7 +46,7 @@ export default function ProcessLogs({ logs }) {
         <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
 
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-[#4f4557]">
+            <h3 className="text-2xl font-bold text-[#4f4557]">
               Live Execution Log
             </h3>
 
@@ -55,7 +55,7 @@ export default function ProcessLogs({ logs }) {
             </span>
           </div>
 
-          <div className="bg-[var(--log-bg)] rounded-2xl p-5 h-[500px] overflow-auto font-mono text-sm">
+          <div className="bg-[var(--log-bg)] rounded-2xl p-6 h-[500px] overflow-auto font-mono text-sm">
 
             {logs.length === 0 ? (
               <div className="text-[#8b7a93]">

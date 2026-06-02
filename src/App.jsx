@@ -249,9 +249,9 @@ function App() {
 
           <nav className="mt-10 space-y-3 flex flex-col">
             <SidebarLink to="/">Workspace</SidebarLink>
-            <SidebarLink to="/about-memnar">About MEMNAR</SidebarLink>
             {displayResults && <SidebarLink to="/results">Results</SidebarLink>}
             <SidebarLink to="/process-logs">Process Logs</SidebarLink>
+            <SidebarLink to="/about-memnar">About MEMNAR</SidebarLink>
             <SidebarLink to="/about-us">About the Project</SidebarLink>
             <SidebarLink to="/account">Account</SidebarLink>
           </nav>
@@ -304,12 +304,12 @@ function App() {
           }
         />
 
-        <Route path="/about-memnar" element={<AboutMemnar />} />
         <Route
           path="/results"
           element={<Results />}
         />
         <Route path="/process-logs" element={<ProcessLogs logs={logs} />} />
+        <Route path="/about-memnar" element={<AboutMemnar />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/account" element={<Account isLoggedIn={isLoggedIn} />} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />

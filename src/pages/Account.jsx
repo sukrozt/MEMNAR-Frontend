@@ -37,14 +37,14 @@ export default function Account({ isLoggedIn }) {
   }, [isLoggedIn]);
 
   return (
-    <main className="flex-1 p-6 xl:p-8 overflow-y-auto">
-      <p className="text-xs tracking-[0.3em] uppercase text-[var(--primary)] font-semibold">
+    <main className="flex-1 p-8 overflow-y-auto">
+      <p className="text-xs uppercase tracking-[0.25em] text-[var(--primary)] font-medium">
         Workspace / Account
       </p>
 
-      <h1 className="text-4xl xl:text-5xl font-extrabold mt-3 text-[#6d6075]">
+      <h2 className="text-3xl xl:text-4xl font-bold mt-2 leading-tight text-[#5f4b7a]">
         My Account
-      </h1>
+      </h2>
 
       {!isLoggedIn ? (
         <div className="mt-8 bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
@@ -61,7 +61,7 @@ export default function Account({ isLoggedIn }) {
         <div className="mt-8 space-y-8 max-w-6xl">
           {/* Profile Information */}
           <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
-            <h2 className="text-xl font-bold text-[#6d6075] border-b border-[#ece7ef] pb-3 mb-6">Profile Information</h2>
+            <h2 className="text-2xl font-bold text-[#6d6075] border-b border-[#ece7ef] pb-3 mb-6">Profile Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-sm text-[#8b7a93] font-semibold uppercase tracking-wide mb-1">Username</p>
@@ -78,7 +78,7 @@ export default function Account({ isLoggedIn }) {
 
           {/* Configurations (Inputs) */}
           <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
-            <h2 className="text-xl font-bold text-[#6d6075] border-b border-[#ece7ef] pb-3 mb-6">Past Configurations (Inputs)</h2>
+            <h2 className="text-2xl font-bold text-[#6d6075] border-b border-[#ece7ef] pb-3 mb-6">Past Configurations (Inputs)</h2>
             {configs.length === 0 ? <p className="text-[#8b7a93]">You don't have any saved configurations yet.</p> : (
               <ul className="space-y-4">
                 {configs.map(config => (
