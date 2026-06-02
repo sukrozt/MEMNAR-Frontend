@@ -11,9 +11,20 @@ export default function AboutUs() {
 
       <div className="mt-8 space-y-6 max-w-6xl">
         <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece7ef]">
-          <h2 className="text-2xl font-bold text-[#4f4557] mb-4">
-            MEMNAR Web Server
-          </h2>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <h2 className="text-2xl font-bold text-[#4f4557] mb-4">
+              MEMNAR Web Server
+            </h2>
+            <a className="ml-auto mb-4" href="MEMNAR Web Server Poster.pdf" target='_blank' rel='noopener noreferrer'>
+              <button
+                onClick={() => downloadResults()}
+                className="px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all shadow-sm hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-soft))' }}
+              >
+                Download Poster
+              </button>
+            </a>
+          </div>
 
           <p className="text-base leading-8 text-[#4d4d4d]">
             This project aims to develop a web-based platform for the MEMNAR
